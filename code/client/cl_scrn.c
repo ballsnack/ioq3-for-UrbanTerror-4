@@ -373,9 +373,11 @@ void SCR_DrawDemoRecording( void ) {
 	}
 
 	pos = FS_FTell( clc.demofile );
-	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
+	//sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
+	sprintf( string, ": %.10s... %iKB", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExt( 320 - strlen( string ) * 4, 1, 7, string, g_color_table[7], qtrue );
+	SCR_DrawStringExt( 320 - strlen( string ) * 5.15 , 1, 8, "REC", g_color_table[1], qtrue );
+ 	SCR_DrawStringExt( 320 - strlen( string ) * 5.15 + 30 , 1, 8, string, g_color_table[7], qtrue );
 }
 
 
