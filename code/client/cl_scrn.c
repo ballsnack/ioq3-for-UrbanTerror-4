@@ -37,6 +37,9 @@ cvar_t      *cl_drawclockfontsize;
 cvar_t      *cl_drawclockposx;
 cvar_t      *cl_drawclockposy;
 cvar_t 		*cl_crosshairhealthcolor;
+cvar_t 		*cl_drawhealth;
+cvar_t 		*cl_drawhealthposx;
+cvar_t 		*cl_drawhealthposy;
 
 /*
 ================
@@ -388,6 +391,45 @@ void SCR_DrawClock( void ) {
 
 /*
 =================
+SCR_DrawHealth
+=================
+*/
+void SCR_DrawHealth( void ) {
+	char healthStr[6];
+	int health, healthCol, posx, posy;
+	vec4_t boxCol;
+
+	posx = cl_drawhealthposx->integer;
+	posy = cl_drawhealthposy->integer;
+	health = cl.snap.ps.stats[0];
+
+	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
+		return;
+
+	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
+	boxCol[3] = 0.85;
+	if (cl_drawhealth->value) {
+		Com_sprintf(healthStr, 6, "%3d%%", health);
+		SCR_FillRect(posx, posy - 3, 32.0, 16.0, boxCol);
+		if (health >= 80) {
+			healthCol = 2;
+		} else if (health <= 79 && health >= 44) {
+			healthCol = 3;
+		} else {
+			healthCol = 1;
+		}
+		if (health == 100) {
+		SCR_DrawStringExtNoShadow((posx + 15) - strlen(healthStr) * 4, posy, 8, healthStr, g_color_table[healthCol], qtrue );
+		} else if (health <= 99 && health >= 10){
+		SCR_DrawStringExtNoShadow((posx) - strlen(healthStr), posy, 8, healthStr, g_color_table[healthCol], qtrue );
+		} else if (health < 10) {
+		SCR_DrawStringExtNoShadow((posx - 5) - strlen(healthStr), posy, 8, healthStr, g_color_table[healthCol], qtrue );
+		}
+	}
+}
+
+/*
+=================
 SCR_CrosshairHealthColor
 =================
 */
@@ -493,6 +535,9 @@ void SCR_Init( void ) {
     cl_drawclockposx = Cvar_Get ("cl_drawclockposx", "2", CVAR_ARCHIVE);
     cl_drawclockposy = Cvar_Get ("cl_drawclockposy", "42", CVAR_ARCHIVE);
 	cl_crosshairhealthcolor = Cvar_Get ("cl_crosshairhealthcolor", "0", CVAR_ARCHIVE);
+    cl_drawhealth = Cvar_Get ("cl_drawHealth", "1", CVAR_ARCHIVE);
+    cl_drawhealthposy = Cvar_Get("cl_drawhealthposy", "417", CVAR_ARCHIVE);
+    cl_drawhealthposx = Cvar_Get("cl_drawhealthposx", "3", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }
@@ -564,6 +609,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			SCR_DrawDemoRecording();
 			SCR_DrawClock();
 			SCR_CrosshairHealthColor();
+			SCR_DrawHealth();
 			break;
 		}
 	}

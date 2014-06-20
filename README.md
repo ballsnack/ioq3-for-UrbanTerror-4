@@ -7,3 +7,6 @@
 + `cl_drawclockfontsize [0|∞]` - change the size of the clock
 + `cl_drawclockposx [∞|∞]` - change the x-axis of the clock
 + `cl_drawclockposy [∞|∞]` - change the y-axis of the clock
++ `cl_drawhealth [0|1]` - show current health on the HUD
++ `cl_drawhealthposx [∞|∞]` - change the x-axis of the health box
++ `cl_drawhealthposy [∞|∞]` - change the y-axis of the health box
