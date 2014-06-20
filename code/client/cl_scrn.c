@@ -31,6 +31,7 @@ cvar_t		*cl_graphheight;
 cvar_t		*cl_graphscale;
 cvar_t		*cl_graphshift;
 cvar_t		*cl_drawclock;
+cvar_t 		*cl_crosshairhealthcolor;
 
 /*
 ================
@@ -359,6 +360,27 @@ void SCR_DrawClock( void ) {
 	}
 }
 
+/*
+=================
+SCR_CrosshairHealthColor
+=================
+*/
+void SCR_CrosshairHealthColor(void){
+	int health;
+
+	health = cl.snap.ps.stats[0];
+
+	if (cl_crosshairhealthcolor->integer == 1){
+		if (health >= 80){
+			Cvar_Set("cg_crosshairrgb", "0 1 0 1");
+		} else if (health <= 79 && health >= 44) {
+			Cvar_Set("cg_crosshairrgb", "1 1 0 1");
+		} else {
+			Cvar_Set("cg_crosshairrgb", "1 0 0 1");
+		}
+	}
+}
+
 
 /*
 ===============================================================================
@@ -439,6 +461,7 @@ void SCR_Init( void ) {
 	cl_graphscale = Cvar_Get ("graphscale", "1", CVAR_CHEAT);
 	cl_graphshift = Cvar_Get ("graphshift", "0", CVAR_CHEAT);
 	cl_drawclock = Cvar_Get ("cl_drawclock", "0", CVAR_ARCHIVE);
+	cl_crosshairhealthcolor = Cvar_Get ("cl_crosshairhealthcolor", "0", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }
@@ -509,6 +532,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			CL_CGameRendering( stereoFrame );
 			SCR_DrawDemoRecording();
 			SCR_DrawClock();
+			SCR_CrosshairHealthColor();
 			break;
 		}
 	}
