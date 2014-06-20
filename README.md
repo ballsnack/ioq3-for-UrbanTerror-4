@@ -10,6 +10,7 @@
 + `cl_drawhealth [0|1]` - show current health on the HUD
 + `cl_drawhealthposx [∞|∞]` - change the x-axis of the health box
 + `cl_drawhealthposy [∞|∞]` - change the y-axis of the health box
++ `s_disableEnvSounds [0|1]` - disable environment sounds on maps
 
 ### Other ###
 + Updated the recording message to look nicer

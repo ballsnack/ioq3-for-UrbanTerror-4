@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "snd_codec.h"
 #include "client.h"
 #include "snd_dmahd.h"
+#include "snd_ignoredsounds.h"
 
 void S_Play_f(void);
 void S_SoundList_f(void);
@@ -88,6 +89,7 @@ cvar_t		*s_dev;
 cvar_t		*s_show;
 cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
+cvar_t 		*s_disableEnvSounds;
 
 loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
@@ -484,6 +486,15 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 
 	sfx = &s_knownSfx[ sfxHandle ];
 
+	if (s_disableEnvSounds->integer == 1){
+		for (i = 0; ; i++){
+			if (!s_ignoredSounds[i])
+				break;
+			if (!Q_stricmp(sfx->soundName, s_ignoredSounds[i]))
+				return;
+		}
+	}
+
 	if (sfx->inMemory == qfalse) {
 		S_memoryLoad(sfx);
 	}
@@ -696,6 +707,10 @@ Include velocity in case I get around to doing doppler...
 */
 void S_Base_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle ) {
 	sfx_t *sfx;
+
+	if (s_disableEnvSounds->integer == 1) {
+ 		return;
+ 	}
 
 	if ( !s_soundStarted || s_soundMuted ) {
 		return;
@@ -1484,6 +1499,7 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_show = Cvar_Get ("s_show", "0", CVAR_CHEAT);
 	s_testsound = Cvar_Get ("s_testsound", "0", CVAR_CHEAT);
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
+	s_disableEnvSounds = Cvar_Get ("s_disableEnvSounds", "1", CVAR_ARCHIVE);
 
 	Cmd_AddCommand( "s_devlist", S_dmaHD_devlist );
 	
