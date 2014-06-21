@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "client.h"
 #include "snd_dmahd.h"
 #include "snd_ignoredsounds.h"
+#include "snd_ignoredradios.h"
 
 void S_Play_f(void);
 void S_SoundList_f(void);
@@ -90,6 +91,7 @@ cvar_t		*s_show;
 cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
 cvar_t 		*s_disableEnvSounds;
+cvar_t 		*s_radio;
 
 loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
@@ -491,6 +493,15 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 			if (!s_ignoredSounds[i])
 				break;
 			if (!Q_stricmp(sfx->soundName, s_ignoredSounds[i]))
+				return;
+		}
+	}
+
+	if (s_radio->integer == 0){
+		for (i = 0; ; i++){
+			if (!s_ignoredRadios[i])
+				break;
+			if (!Q_stricmp(sfx->soundName, s_ignoredRadios[i]))
 				return;
 		}
 	}
@@ -1500,6 +1511,7 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_testsound = Cvar_Get ("s_testsound", "0", CVAR_CHEAT);
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
 	s_disableEnvSounds = Cvar_Get ("s_disableEnvSounds", "1", CVAR_ARCHIVE);
+	s_radio = Cvar_Get ("s_radio", "1", CVAR_ARCHIVE);
 
 	Cmd_AddCommand( "s_devlist", S_dmaHD_devlist );
 	

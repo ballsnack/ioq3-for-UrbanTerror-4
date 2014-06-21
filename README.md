@@ -11,6 +11,7 @@
 + `cl_drawhealthposx [∞|∞]` - change the x-axis of the health box
 + `cl_drawhealthposy [∞|∞]` - change the y-axis of the health box
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps
++ `s_radio [0|1]` - disable/enable radio calls
 
 ### Other ###
 + Updated the recording message to look nicer
