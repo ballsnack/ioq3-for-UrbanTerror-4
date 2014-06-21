@@ -59,6 +59,7 @@ console_t	con;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
+cvar_t 		*cg_chatcolor;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -314,6 +315,7 @@ void Con_Init (void) {
 
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
 	con_conspeed = Cvar_Get ("scr_conspeed", "3", 0);
+	cg_chatcolor = Cvar_Get("cg_chatcolor", "7", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -508,6 +510,9 @@ void Con_DrawNotify (void)
 	int		time;
 	int		skip;
 	int		currentColor;
+	int 	chatcolor;
+
+	chatcolor = cg_chatcolor->integer;
 
 	currentColor = 7;
 	re.SetColor( g_color_table[currentColor] );
@@ -554,13 +559,13 @@ void Con_DrawNotify (void)
 	{
 		if (chat_team)
 		{
-			SCR_DrawBigString (8, v, "say_team:", 1.0f );
+			SCR_DrawBigStringColor (8, v, "teamchat:", g_color_table[chatcolor] );
 			skip = 10;
 		}
 		else
 		{
-			SCR_DrawBigString (8, v, "say:", 1.0f );
-			skip = 5;
+			SCR_DrawBigStringColor (8, v, "chat:", g_color_table[chatcolor] );
+			skip = 6;
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
