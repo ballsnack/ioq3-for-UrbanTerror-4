@@ -82,6 +82,8 @@ cvar_t	*cl_altTab;
 cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
+cvar_t 	*cl_noConfigStats;
+
 //@Barbatos
 #ifdef USE_AUTH
 cvar_t  *cl_auth_engine;
@@ -2882,6 +2884,8 @@ void CL_Init( void ) {
 	cl_mouseAccel = Cvar_Get ("cl_mouseAccel", "0", CVAR_ARCHIVE);
 	cl_freelook = Cvar_Get( "cl_freelook", "1", CVAR_ARCHIVE );
 
+	cl_noConfigStats = Cvar_Get("cl_noConfigStats", "0", CVAR_ARCHIVE);
+
 	// 0: legacy mouse acceleration
 	// 1: new implementation
 	cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
@@ -3337,29 +3341,31 @@ void CL_ServerStatusResponse( netadr_t from, msg_t *msg ) {
 	len = 0;
 	Com_sprintf(&serverStatus->string[len], sizeof(serverStatus->string)-len, "%s", s);
 
-	if (serverStatus->print) {
-		Com_Printf("Server settings:\n");
-		// print cvars
-		while (*s) {
-			for (i = 0; i < 2 && *s; i++) {
-				if (*s == '\\')
-					s++;
-				l = 0;
-				while (*s) {
-					info[l++] = *s;
-					if (l >= MAX_INFO_STRING-1)
-						break;
-					s++;
-					if (*s == '\\') {
-						break;
+	if (cl_noConfigStats->integer == 0) {
+		if (serverStatus->print) {
+			Com_Printf("Server settings:\n");
+			// print cvars
+			while (*s) {
+				for (i = 0; i < 2 && *s; i++) {
+					if (*s == '\\')
+						s++;
+					l = 0;
+					while (*s) {
+						info[l++] = *s;
+						if (l >= MAX_INFO_STRING-1)
+							break;
+						s++;
+						if (*s == '\\') {
+							break;
+						}
 					}
-				}
-				info[l] = '\0';
-				if (i) {
-					Com_Printf("%s\n", info);
-				}
-				else {
-					Com_Printf("%-24s", info);
+					info[l] = '\0';
+					if (i) {
+						Com_Printf("%s\n", info);
+					}
+					else {
+						Com_Printf("%-24s", info);
+					}
 				}
 			}
 		}
