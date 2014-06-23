@@ -83,6 +83,7 @@ cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
 cvar_t 	*cl_noConfigStats;
+cvar_t 	*cg_randomrgb;
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -2831,6 +2832,28 @@ static void CL_GenerateQKey(void)
 
 /*
 ====================
+CG_RandomRGB
+====================
+*/
+void CG_RandomRGB(void) {
+	int 	rgb1, rgb2, rgb3;
+	char 	s[12];
+
+	srand((unsigned) time(NULL));
+
+	rgb1 = rand() % 256;
+	rgb2 = rand() % 256;
+	rgb3 = rand() % 256;
+
+	Com_sprintf(s, 12, "%i, %i, %i", rgb1, rgb2, rgb3);
+
+	if (cg_randomrgb->integer == 1) {
+		Cvar_Set("cg_rgb", s);
+	}
+}
+
+/*
+====================
 CL_Init
 ====================
 */
@@ -2885,6 +2908,7 @@ void CL_Init( void ) {
 	cl_freelook = Cvar_Get( "cl_freelook", "1", CVAR_ARCHIVE );
 
 	cl_noConfigStats = Cvar_Get("cl_noConfigStats", "0", CVAR_ARCHIVE);
+	cg_randomrgb = Cvar_Get("cg_randomrgb", "0", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation
@@ -2989,6 +3013,10 @@ void CL_Init( void ) {
 	SCR_Init ();
 
 	Cbuf_Execute ();
+
+	if (cg_randomrgb->integer == 1 ){
+		CG_RandomRGB();
+	}
 
 	Cvar_Set( "cl_running", "1" );
 

@@ -14,6 +14,7 @@
 + `s_radio [0|1]` - disable/enable radio calls
 + `cg_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
 + `cl_noConfigStats [0|1]` - enable/disable output of server config settings when using `serverstatus`
++ `cg_randomrgb [0|1]` - generate random cg_rgb upon startup
 
 ### Other ###
 + Updated the recording message to look nicer
