@@ -559,12 +559,14 @@ void Con_DrawNotify (void)
 	{
 		if (chat_team)
 		{
-			SCR_DrawBigStringColor (8, v, "teamchat:", g_color_table[chatcolor] );
+			SCR_DrawBigStringColor (8, v, "teamchat", g_color_table[chatcolor] );
+			SCR_DrawBigStringColor (8, v, "        :", g_color_table[7] );
 			skip = 10;
 		}
 		else
 		{
-			SCR_DrawBigStringColor (8, v, "chat:", g_color_table[chatcolor] );
+			SCR_DrawBigStringColor (8, v, "chat", g_color_table[chatcolor] );
+			SCR_DrawBigStringColor (8, v, "    :", g_color_table[7] );
 			skip = 6;
 		}
 
