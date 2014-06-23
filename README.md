@@ -14,6 +14,7 @@
 + `s_radio [0|1]` - disable/enable radio calls
 + `cg_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
 + `cg_randomrgb [0|1]` - generate random cg_rgb upon startup
++ `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
 
 ### Other ###
 + Updated the recording message to look nicer

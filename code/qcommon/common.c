@@ -81,6 +81,9 @@ cvar_t  *cl_packetdelay;
 cvar_t  *sv_packetdelay;
 cvar_t	*com_cameraMode;
 cvar_t 	*com_logfileName;
+
+cvar_t 	*com_nosplash;
+
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
 #endif
@@ -2489,6 +2492,8 @@ void Com_Init( char *commandLine ) {
 
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE);
 
+	com_nosplash = Cvar_Get("com_nosplash", "1", CVAR_ARCHIVE);
+
 #if defined(_WIN32) && defined(_DEBUG)
 	com_noErrorInterrupt = Cvar_Get( "com_noErrorInterrupt", "0", 0 );
 #endif
@@ -2531,10 +2536,11 @@ void Com_Init( char *commandLine ) {
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
 		if ( !com_dedicated->integer ) {
-			Cbuf_AddText ("cinematic idlogo.RoQ\n");
-			if( !com_introPlayed->integer ) {
-				Cvar_Set( com_introPlayed->name, "1" );
-				Cvar_Set( "nextmap", "cinematic intro.RoQ" );
+			if (com_nosplash->integer == 1) {
+				Cvar_Set(com_introPlayed -> name, "1");
+				Cvar_Set("nextmap", "cinematic intro.RoQ");
+			} else {
+				Cbuf_AddText ("cinematic idlogo.RoQ\n");
 			}
 		}
 	}
