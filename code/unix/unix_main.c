@@ -1207,16 +1207,9 @@ char *Sys_GetClipboardData(void)
   #ifdef MACOS_X
   fp = popen("/usr/bin/pbpaste", "r");
   #else
-  if (access("/usr/bin/xclip", F_OK) != -1) {
-      fp = popen("/usr/bin/xclip -o", "r");
-  } else if (access("/usr/local/bin/xclip", F_OK) != -1) {
-      fp = popen("/usr/local/bin/xclip -o", "r");
-  } else {
-      return NULL;
-  }
+  fp = popen("/usr/bin/xclip -o", "r");
   #endif
   if (fp != NULL) {
-    cliptext = Z_Malloc(1024);
     if (fgets(cliptext, sizeof(cliptext)-1, fp) != NULL) {
       data = Z_Malloc(sizeof(cliptext) + 1);
       Q_strncpyz(data, cliptext, sizeof(cliptext));

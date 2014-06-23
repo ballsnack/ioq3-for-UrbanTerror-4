@@ -18,6 +18,7 @@
 ### Other ###
 + Updated the recording message to look nicer
 + Changed the ugly console to a prettier one
++ Fixed mac copypasta (previously only pasting first 2 letters of clipboard)
 
 ### Credits ###
 + [clearskies](https://github.com/clearskies)
