@@ -16,6 +16,7 @@
 + `cg_randomrgb [0|1]` - generate random cg_rgb upon startup
 + `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
 + `cl_drawKills [0|1]` - show current kills on the HUD
++ `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
 
 ### Other ###
 + Updated the recording message to look nicer
