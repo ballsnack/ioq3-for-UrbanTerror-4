@@ -367,7 +367,7 @@ rescan:
 	}
 
 	if (cl_teamchatIndicator->value) {
-		if (!strcmp(cmd, "tcchat") && strstr(Cmd_Argv(2), " ^2(TEAM) ") != Cmd_Argv(2)) {
+		if (!strcmp(cmd, "tcchat") && strstr(Cmd_Argv(2), "^2(TEAM) ") != Cmd_Argv(2)) {
 			int newStrlen = strlen(s) + 12;
 			char *s2 = (char *)malloc(newStrlen);
 			int tColour;
@@ -378,7 +378,7 @@ rescan:
 			} else {
 				tColour = 7;
 			}
-			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \" ^2(TEAM) ^%i%s\"", Cmd_Argv(1), tColour, Cmd_Argv(2));
+			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(TEAM) ^%i%s\"", Cmd_Argv(1), tColour, Cmd_Argv(2));
 			s = s2;
 			goto rescan;
 		}

@@ -17,6 +17,7 @@
 + `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
 + `cl_drawKills [0|1]` - show current kills on the HUD
 + `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
++ `cl_hpSub [0|1]` - disable/enable ability to chat `$hp` to chat your current health
 
 ### Other ###
 + Updated the recording message to look nicer
