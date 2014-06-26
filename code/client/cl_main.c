@@ -1184,6 +1184,19 @@ void CL_RequestAuthorization( void ) {
 }
 
 /*
+=================
+CG_RandomRGB_f
+=================
+*/
+
+void CG_RandomRGB (void) {
+	char s[12];
+	srand((unsigned)time(NULL));
+	Com_sprintf(s, 12, "%i %i %i", rand() % 256, rand() % 256, rand() % 256);
+	Cvar_Set("cg_rgb", s);
+}
+
+/*
 ======================================================================
 
 CONSOLE COMMANDS
@@ -1349,6 +1362,10 @@ void CL_Connect_f( void ) {
 
 	// server connection string
 	Cvar_Set( "cl_currentServerAddress", server );
+
+	if (cg_randomrgb->integer == 2) {
+		CG_RandomRGB();
+	}
 }
 
 #define MAX_RCON_MESSAGE 1024
@@ -2541,6 +2558,10 @@ void CL_Frame ( int msec ) {
 	Con_RunConsole();
 
 	cls.framecount++;
+
+	if (cg_randomrgb->integer == 3) {
+		CG_RandomRGB();
+	}
 }
 
 
@@ -2851,28 +2872,6 @@ static void CL_GenerateQKey(void)
 
 /*
 ====================
-CG_RandomRGB
-====================
-*/
-void CG_RandomRGB(void) {
-	int 	rgb1, rgb2, rgb3;
-	char 	s[12];
-
-	srand((unsigned) time(NULL));
-
-	rgb1 = rand() % 256;
-	rgb2 = rand() % 256;
-	rgb3 = rand() % 256;
-
-	Com_sprintf(s, 12, "%i, %i, %i", rgb1, rgb2, rgb3);
-
-	if (cg_randomrgb->integer == 1) {
-		Cvar_Set("cg_rgb", s);
-	}
-}
-
-/*
-====================
 CL_Init
 ====================
 */
@@ -3032,6 +3031,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("model", CL_SetModel_f );
 	Cmd_AddCommand ("video", CL_Video_f );
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
+	Cmd_AddCommand ("randomrgb", CG_RandomRGB);
 	CL_InitRef();
 
 	SCR_Init ();
