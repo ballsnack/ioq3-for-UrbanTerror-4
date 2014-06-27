@@ -476,6 +476,19 @@ void SCR_CrosshairHealthColor(void){
 			Cvar_Set("cg_crosshairrgb", "1 0 0 1");
 		}
 	}
+
+	if (cl_crosshairhealthcolor->integer == 2){
+		if (health >= 80){
+			Cvar_Set("cg_crosshairrgb", "0 1 0 1");
+			Cvar_Set("cg_scopergb", "0 1 0 1");
+		} else if (health <= 79 && health >= 44) {
+			Cvar_Set("cg_crosshairrgb", "1 1 0 1");
+			Cvar_Set("cg_scopergb", "1 1 0 1");
+		} else {
+			Cvar_Set("cg_crosshairrgb", "1 0 0 1");
+			Cvar_Set("cg_scopergb", "1 0 0 1");
+		}
+	}
 }
 
 /*

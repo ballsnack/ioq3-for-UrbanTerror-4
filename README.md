@@ -1,7 +1,7 @@
 ## Urban Terror 4.2.0xx Client ##
 
 ### Added CVARs ###
-+ `cl_crosshairhealthcolor [0|1]` - crosshair will change color depending on your health
++ `cl_crosshairhealthcolor [0|2]` - crosshair will change color depending on your health
 + `cl_drawclock12 [0|1]` - use 12 hour clock
 + `cl_drawclockcolor [1|20]` - change the color of the clock
 + `cl_drawclockfontsize [0|608]` - change the size of the clock

@@ -1363,9 +1363,6 @@ void CL_Connect_f( void ) {
 	// server connection string
 	Cvar_Set( "cl_currentServerAddress", server );
 
-	if (cg_randomrgb->integer == 2) {
-		CG_RandomRGB();
-	}
 }
 
 #define MAX_RCON_MESSAGE 1024
@@ -2737,6 +2734,10 @@ void CL_InitRef( void ) {
 
 	// unpause so the cgame definately gets a snapshot and renders a frame
 	Cvar_Set( "cl_paused", "0" );
+
+	if (cg_randomrgb->integer == 2) {
+		CG_RandomRGB();
+	}
 }
 
 
