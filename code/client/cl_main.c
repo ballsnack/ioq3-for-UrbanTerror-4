@@ -2656,6 +2656,10 @@ void CL_StartHunkUsers( void ) {
 		cls.uiStarted = qtrue;
 		CL_InitUI();
 	}
+
+	if (cg_randomrgb->integer == 2) {
+		CG_RandomRGB();
+	}
 }
 
 /*
@@ -2735,9 +2739,6 @@ void CL_InitRef( void ) {
 	// unpause so the cgame definately gets a snapshot and renders a frame
 	Cvar_Set( "cl_paused", "0" );
 
-	if (cg_randomrgb->integer == 2) {
-		CG_RandomRGB();
-	}
 }
 
 
