@@ -19,6 +19,9 @@
 + `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
 + `cl_hpSub [0|1]` - disable/enable ability to chat `$hp` to chat your current health
 + `con_nochat [0|1]` - disable/enable output of chat in the console
++ `cg_autoweapswitch [0|1]` - disable/enable auto weapon switching when out of ammo
++ `cg_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
+
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

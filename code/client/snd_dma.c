@@ -92,6 +92,8 @@ cvar_t		*s_mixahead;
 cvar_t		*s_mixPreStep;
 cvar_t 		*s_disableEnvSounds;
 cvar_t 		*s_radio;
+cvar_t 		*cg_autoweapswitch;
+cvar_t 		*cg_autoreload;
 
 loopSound_t		loopSounds[MAX_GENTITIES];
 static	channel_t		*freelist = NULL;
@@ -504,6 +506,18 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 			if (!Q_stricmp(sfx->soundName, s_ignoredRadios[i]))
 				return;
 		}
+	}
+
+	if (cg_autoweapswitch->integer == 1) {
+		Cvar_Set("cg_autoreload", "0");
+		if (!Q_stricmp(sfx->soundName, "sound/weapons/beretta/92g_noammo.wav"))
+			Cbuf_AddText("weapprev\n");
+	}
+
+	if (cg_autoreload->integer == 1) {
+		Cvar_Set("cg_autoweapswitch", "0");
+		if (!Q_stricmp(sfx->soundName, "sound/weapons/beretta/92g_noammo.wav"))
+			Cbuf_AddText("+button5; wait; -button5\n");
 	}
 
 	if (sfx->inMemory == qfalse) {
@@ -1512,6 +1526,8 @@ qboolean S_Base_Init( soundInterface_t *si ) {
 	s_dev = Cvar_Get ("s_dev", "", CVAR_ARCHIVE);
 	s_disableEnvSounds = Cvar_Get ("s_disableEnvSounds", "1", CVAR_ARCHIVE);
 	s_radio = Cvar_Get ("s_radio", "1", CVAR_ARCHIVE);
+	cg_autoweapswitch = Cvar_Get("cg_autoweapswitch", "0", CVAR_ARCHIVE);
+	cg_autoreload = Cvar_Get("cg_autoreload", "0", CVAR_ARCHIVE);
 
 	Cmd_AddCommand( "s_devlist", S_dmaHD_devlist );
 	
