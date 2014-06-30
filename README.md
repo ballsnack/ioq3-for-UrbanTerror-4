@@ -12,16 +12,15 @@
 + `cl_drawhealthposy [0|608]` - change the y-axis of the health box
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps
 + `s_radio [0|1]` - disable/enable radio calls
-+ `cg_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
-+ `cg_randomrgb [0|3]` - generate random cg_rgb upon startup
++ `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
++ `cl_randomrgb [0|3]` - generate random cg_rgb upon startup
 + `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
 + `cl_drawKills [0|1]` - show current kills on the HUD
 + `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
 + `cl_hpSub [0|1]` - disable/enable ability to chat `$hp` to chat your current health
 + `con_nochat [0|1]` - disable/enable output of chat in the console
-+ `cg_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo (1 = weapprev, 2 = weapnext)
-+ `cg_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
-
++ `cl_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo (1 = weapprev, 2 = weapnext)
++ `cl_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

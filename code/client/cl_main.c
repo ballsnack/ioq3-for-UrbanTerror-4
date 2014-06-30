@@ -82,7 +82,7 @@ cvar_t	*cl_altTab;
 cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
-cvar_t 	*cg_randomrgb;
+cvar_t 	*cl_randomrgb;
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_hpSub;
 
@@ -1185,11 +1185,11 @@ void CL_RequestAuthorization( void ) {
 
 /*
 =================
-CG_RandomRGB_f
+CL_RandomRGB_f
 =================
 */
 
-void CG_RandomRGB (void) {
+void CL_RandomRGB (void) {
 	char s[12];
 	srand((unsigned)time(NULL));
 	Com_sprintf(s, 12, "%i %i %i", rand() % 256, rand() % 256, rand() % 256);
@@ -2556,8 +2556,8 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
-	if (cg_randomrgb->integer == 3) {
-		CG_RandomRGB();
+	if (cl_randomrgb->integer == 3) {
+		CL_RandomRGB();
 	}
 }
 
@@ -2657,8 +2657,8 @@ void CL_StartHunkUsers( void ) {
 		CL_InitUI();
 	}
 
-	if (cg_randomrgb->integer == 2) {
-		CG_RandomRGB();
+	if (cl_randomrgb->integer == 2) {
+		CL_RandomRGB();
 	}
 }
 
@@ -2927,7 +2927,7 @@ void CL_Init( void ) {
 	cl_mouseAccel = Cvar_Get ("cl_mouseAccel", "0", CVAR_ARCHIVE);
 	cl_freelook = Cvar_Get( "cl_freelook", "1", CVAR_ARCHIVE );
 
-	cg_randomrgb = Cvar_Get("cg_randomrgb", "0", CVAR_ARCHIVE);
+	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
 	cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
 
@@ -3033,15 +3033,15 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("model", CL_SetModel_f );
 	Cmd_AddCommand ("video", CL_Video_f );
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
-	Cmd_AddCommand ("randomrgb", CG_RandomRGB);
+	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
 	CL_InitRef();
 
 	SCR_Init ();
 
 	Cbuf_Execute ();
 
-	if (cg_randomrgb->integer == 1 ){
-		CG_RandomRGB();
+	if (cl_randomrgb->integer == 1 ){
+		CL_RandomRGB();
 	}
 
 	Cvar_Set( "cl_running", "1" );

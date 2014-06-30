@@ -59,7 +59,7 @@ console_t	con;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
-cvar_t 		*cg_chatcolor;
+cvar_t 		*cl_chatcolor;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -315,7 +315,7 @@ void Con_Init (void) {
 
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
 	con_conspeed = Cvar_Get ("scr_conspeed", "3", 0);
-	cg_chatcolor = Cvar_Get("cg_chatcolor", "7", CVAR_ARCHIVE);
+	cl_chatcolor = Cvar_Get("cl_chatcolor", "7", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -512,7 +512,7 @@ void Con_DrawNotify (void)
 	int		currentColor;
 	int 	chatcolor;
 
-	chatcolor = cg_chatcolor->integer;
+	chatcolor = cl_chatcolor->integer;
 
 	currentColor = 7;
 	re.SetColor( g_color_table[currentColor] );
