@@ -19,8 +19,10 @@
 + `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
 + `cl_hpSub [0|1]` - disable/enable ability to chat `$hp` to chat your current health
 + `con_nochat [0|1]` - disable/enable output of chat in the console
-+ `cl_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo (1 = weapprev, 2 = weapnext)
++ `cl_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo
 + `cl_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
++ `clan [clantag]` - add a clantag to your name
++ `cl_clanpos [0|1]` - change the position of the clantag
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
