@@ -155,7 +155,7 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	va_end (argptr);
 
 	if (con_nochat && con_nochat->integer) {
-		if (strstr(msg, "^3: ^3") || strstr(msg, "): ^3") || strstr(msg, "^7: ^3")) {
+		if (strstr(msg, "^3: ^3") || strstr(msg, "): ^3") || strstr(msg, "^7: ^3") || strstr(msg, "^7]: ^3")) {
 			suppressNext = qtrue;
 			return;
 		} else if (suppressNext) {
