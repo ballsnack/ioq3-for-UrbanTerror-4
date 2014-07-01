@@ -266,6 +266,53 @@ void Cmd_Exec_f( void ) {
 
 /*
 ===============
+Cmd_Sysexec_f
+
+Execute a system command via command line
+===============
+*/
+void Cmd_Sysexec_f (void) {
+	int	 	 num, i;
+	char	 cmd[1024];
+
+	#ifdef WIN32 
+		char errormsg[1024];
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		ZeroMemory( &si, sizeof(si) );
+		si.cb = sizeof(si);
+		ZeroMemory( &pi, sizeof(pi) ); //up to here almost carbon copy of microsoft's example
+		si.dwFlags = STARTF_USESHOWWINDOW; //needed to use the next one
+		si.wShowWindow = SW_SHOWNOACTIVATE; //needed to *not activate, i.e. not focus*
+	#endif //WIN32
+
+	num = Cmd_Argc();
+	if (num < 2) {
+		Com_Printf ("sysexec <command and parameters> : run an external system command via command line\n");
+		return;
+	}
+
+	cmd[0] = 0; //required to start with a null string
+	for (i = 1; i < num; i++) {
+		strcat (cmd, Cmd_Argv(i));
+		if (i != (num-1))
+			strcat (cmd, " ");
+	}
+	Com_Printf("Issuing external command: %s\n",cmd);
+	#ifdef WIN32
+		if(!CreateProcess( NULL,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi )) {
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,0,GetLastError(),0,errormsg,1024,NULL);
+			Com_Printf("Issuing of %s failed: %s.\n",cmd, errormsg);
+				if (GetLastError() == 2)
+					Com_Printf("a command can be in the path or full path can be used\n");
+		}
+	#else
+		system(cmd);
+	#endif //WIN32
+}
+
+/*
+===============
 Cmd_PVstr_f
 
 Inserts the current value of a variable as command text
@@ -785,6 +832,7 @@ Cmd_Init
 void Cmd_Init (void) {
 	Cmd_AddCommand ("cmdlist",Cmd_List_f);
 	Cmd_AddCommand ("exec",Cmd_Exec_f);
+	Cmd_AddCommand ("sysexec", Cmd_Sysexec_f);
 	Cmd_AddCommand ("vstr",Cmd_Vstr_f);
 	Cmd_AddCommand ("+vstr",Cmd_PVstr_f);
 	Cmd_AddCommand ("-vstr",Cmd_PVstr_f);

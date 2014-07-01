@@ -26,6 +26,7 @@
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
++ `sysexec` - execute a command via command line from in-game
 
 ### Other ###
 + Updated the recording message to look nicer
