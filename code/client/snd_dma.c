@@ -509,17 +509,14 @@ void S_Base_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t
 	}
 
 	if (cl_autoweapswitch->integer == 1) {
-		Cvar_Set("cl_autoreload", "0");
 		if (!Q_stricmp(sfx->soundName, "sound/weapons/beretta/92g_noammo.wav"))
 			Cbuf_AddText("weapprev\n");
 	} else if (cl_autoweapswitch->integer == 2) {
-		Cvar_Set("cl_autoreload", "0");
 		if (!Q_stricmp(sfx->soundName, "sound/weapons/beretta/92g_noammo.wav"))
 			Cbuf_AddText("weapnext\n");
 	}
 
 	if (cl_autoreload->integer == 1) {
-		Cvar_Set("cl_autoweapswitch", "0");
 		if (!Q_stricmp(sfx->soundName, "sound/weapons/beretta/92g_noammo.wav"))
 			Cbuf_AddText("+button5; wait; -button5\n");
 	}
