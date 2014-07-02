@@ -407,14 +407,31 @@ void CL_ConsolePrint( char *txt ) {
 		con.initialized = qtrue;
 	}
 
-	if (con_nochat && con_nochat->integer) {
-		if (strstr(txt, "^3: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7: ^3") || strstr(txt, "^7]: ^3")) {
+	if (con_nochat && con_nochat->integer == 1) {
+		if (strstr(txt, "^3: ^3") || 
+			strstr(txt, "): ^3") || 
+			strstr(txt, "^7: ^3") || 
+			strstr(txt, "^7]: ^3")) {
 			suppressNext = qtrue;
 			return;
 		} else if (suppressNext) {
 			suppressNext = qfalse;
 			return;
 		}
+	} else if (con_nochat && con_nochat->integer == 2) {
+		if (strstr(txt, "^3: ^3") || 
+			strstr(txt, "): ^3") || 
+			strstr(txt, "^7: ^3") || 
+			strstr(txt, "^7]: ^3") || 
+			strstr(txt, "server:") ||
+			strstr(txt, "^8(^2b3^8)")) {
+			suppressNext = qtrue;
+			return;
+		} else if (suppressNext) {
+			suppressNext = qfalse;
+			return;
+		}
+
 	}
 
 	if (cls.state == CA_ACTIVE && con_coloredKills && con_coloredKills->integer) {
