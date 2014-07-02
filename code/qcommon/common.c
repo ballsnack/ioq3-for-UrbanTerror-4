@@ -83,8 +83,6 @@ cvar_t	*com_cameraMode;
 cvar_t 	*com_logfileName;
 
 cvar_t 	*com_nosplash;
-cvar_t 	*con_nochat;
-qboolean suppressNext = qfalse;
 
 #if defined(_WIN32) && defined(_DEBUG)
 cvar_t	*com_noErrorInterrupt;
@@ -153,16 +151,6 @@ void QDECL Com_Printf( const char *fmt, ... ) {
 	va_start (argptr,fmt);
 	Q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
-
-	if (con_nochat && con_nochat->integer) {
-		if (strstr(msg, "^3: ^3") || strstr(msg, "): ^3") || strstr(msg, "^7: ^3") || strstr(msg, "^7]: ^3")) {
-			suppressNext = qtrue;
-			return;
-		} else if (suppressNext) {
-			suppressNext = qfalse;
-			return;
-		}
-	}
 
 	if ( rd_buffer ) {
 		if ((strlen (msg) + strlen(rd_buffer)) > (rd_buffersize - 1)) {
@@ -2504,7 +2492,6 @@ void Com_Init( char *commandLine ) {
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE);
 
 	com_nosplash = Cvar_Get("com_nosplash", "1", CVAR_ARCHIVE);
-	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
 
 #if defined(_WIN32) && defined(_DEBUG)
 	com_noErrorInterrupt = Cvar_Get( "com_noErrorInterrupt", "0", 0 );

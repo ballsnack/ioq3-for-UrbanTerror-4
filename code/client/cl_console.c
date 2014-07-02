@@ -63,6 +63,9 @@ cvar_t		*con_notifytime;
 cvar_t 		*cl_chatcolor;
 cvar_t		*con_coloredKills;
 
+cvar_t 	*con_nochat;
+qboolean suppressNext = qfalse;
+
 #define	DEFAULT_CONSOLE_WIDTH	78
 
 vec4_t	console_color = {1.0, 1.0, 1.0, 1.0};
@@ -319,6 +322,7 @@ void Con_Init (void) {
 	con_conspeed = Cvar_Get ("scr_conspeed", "3", 0);
 	cl_chatcolor = Cvar_Get("cl_chatcolor", "7", CVAR_ARCHIVE);
 
+	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
@@ -403,7 +407,17 @@ void CL_ConsolePrint( char *txt ) {
 		con.initialized = qtrue;
 	}
 
-	if (con_coloredKills && con_coloredKills->integer) {
+	if (con_nochat && con_nochat->integer) {
+		if (strstr(txt, "^3: ^3") || strstr(txt, "): ^3") || strstr(txt, "^7: ^3") || strstr(txt, "^7]: ^3")) {
+			suppressNext = qtrue;
+			return;
+		} else if (suppressNext) {
+			suppressNext = qfalse;
+			return;
+		}
+	}
+
+	if (cls.state == CA_ACTIVE && con_coloredKills && con_coloredKills->integer) {
 		char **search;
 		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
