@@ -23,6 +23,7 @@
 + `cl_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
 + `clan [clantag]` - add a clantag to your name
 + `cl_clanpos [0|1]` - change the position of the clantag
++ `con_coloredKills [0|1]` - disable/enable colored player names in the killfeed in the console
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
