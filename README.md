@@ -28,6 +28,7 @@
 ### Commands ###
 + `randomrgb` - generate a random RGB
 + `sysexec` - execute a command via command line from in-game
++ `maplist` - output list of maps on the server
 
 ### Other ###
 + Updated the recording message to look nicer

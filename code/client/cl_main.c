@@ -85,8 +85,13 @@ cvar_t  *cl_mouseAccelStyle;
 cvar_t 	*cl_randomrgb;
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_hpSub;
-cvar_t 	*cl_clanpos;
-cvar_t 	*clan;
+cvar_t  *cl_randomRGB;
+cvar_t  *clan;
+cvar_t  *cl_clanpos;
+cvar_t  *cl_weapAutoSwitch;
+cvar_t  *cl_weapAutoReload;
+
+void CL_Maplist_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -3077,6 +3082,7 @@ void CL_Init( void ) {
 	CL_UpdateGUID( NULL, 0 );
 
 	Com_Printf( "----- Client Initialization Complete -----\n" );
+
 }
 
 
@@ -4000,4 +4006,51 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 	return qfalse;
 }
 
+/*
+====================
+CL_RandomRGB_f
+====================
+*/
+void CL_RandomRGB_f(void) {
+  char s[12];
+  int r, g, b;
+  srand((unsigned)time(NULL));
 
+  r = rand() % 256;
+  g = rand() % 256;
+  b = rand() % 256;
+
+  Com_sprintf(s, 12, "%i %i %i", r, g, b);
+  Cvar_Set("cg_rgb", s);
+}
+
+/*
+====================
+CL_Maplist_f
+====================
+*/
+void CL_Maplist_f(void) {
+  if (cls.state != CA_ACTIVE) {
+    Com_Printf("You can't do that unless you're connected to a server.\n");
+    return;
+  }
+
+  char *sysInfo;
+  char *paks;
+  char *map;
+
+  sysInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
+  paks = Info_ValueForKey(sysInfo, "sv_pakNames");
+
+  Com_Printf("Current server maplist:\n-----------------------\n");
+
+  map = strtok(paks, " ");
+  while (map != NULL) {
+    if (strstr(map, "zUrT42_") != map && Q_stricmp(map, "pak0")) {
+      Com_Printf("%s\n", map);
+    }
+    map = strtok(NULL, " ");
+  }
+
+  Com_Printf("-----------------------\nEnd of current maplist\n");
+}
