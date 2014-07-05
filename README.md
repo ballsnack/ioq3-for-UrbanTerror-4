@@ -25,6 +25,10 @@
 + `cl_clanpos [0|1]` - change the position of the clantag
 + `con_coloredKills [0|1]` - disable/enable colored player names in the killfeed in the console
 + `con_coloredHits [0|2]` - disable/enable colored % damage in console
++ `con_consolePrompt [string]` - change the `]` that is shown in the console when typing
++ `con_promptColor [0|9]` - change the color of the console prompt (`]`)
++ `con_timePrompt [0|1]` - show the time before the console prompt
++ `con_timePrompt12 [0|1]` - use 12 hour time for the timr prompt
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

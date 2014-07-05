@@ -945,14 +945,14 @@ Cvar_Find_f
 */
 void Cvar_Find_f(void) {
 	if (Cmd_Argc() < 2) {
-		Com_Printf("findcvar <string>: finds all cvars with the specified string in their names.\n");
+		Com_Printf("findcvar [string]: finds all cvars with the specified string in their names.\n");
 		return;
 	}
 	cvar_t *cvar;
 
 	for (cvar = cvar_vars; cvar; cvar = cvar->next) {
 		if (Q_stristr(cvar->name, Cmd_Argv(1))) {
-			Com_Printf("%s: %s\n", cvar->name, cvar->string);
+			Com_Printf("^8%s: ^7%s\n", cvar->name, cvar->string);
 		}
 	}
 }
