@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 #include "killLog.h"
+#include "hitLog.h"
 
 
 int g_console_field_width = 78;
@@ -62,6 +63,7 @@ cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
 cvar_t 		*cl_chatcolor;
 cvar_t		*con_coloredKills;
+cvar_t 		*con_coloredHits;
 
 cvar_t 	*con_nochat;
 qboolean suppressNext = qfalse;
@@ -324,6 +326,7 @@ void Con_Init (void) {
 
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
+	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -369,6 +372,40 @@ void Con_Linefeed (qboolean skipnotify)
 		con.text[(con.current%con.totallines)*con.linewidth+i] = (ColorIndex(COLOR_WHITE)<<8) | ' ';
 }
 
+int nameToTeamColour(char *name) {
+	int i, team = 2;
+	char *cs;
+	for (i = 0; i < MAX_CLIENTS; i++) {
+		cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + i];
+		if (!Q_stricmp(Info_ValueForKey(cs, "n"), name)) {
+			team = atoi(Info_ValueForKey(cs, "t"));
+			if (team == TEAM_RED) {
+				team = 1;
+			} else if (team == TEAM_BLUE) {
+				team = 4;
+			} else {
+				team = 2;
+			}
+			break;
+		}
+	}
+	return team;
+}
+
+int damageToColor(int damage) {
+  int color;
+
+  	if (damage >= 60) { 
+  		color = 1;
+  	} else if (damage < 60 && damage >= 30) {
+  		color = 3;
+ 	} else {
+  		color = 2;
+	}
+
+	return color;
+}
+
 /*
 ================
 CL_ConsolePrint
@@ -382,8 +419,12 @@ void CL_ConsolePrint( char *txt ) {
 	int		y;
 	int		c, l;
 	int		color;
+	int 	i;
 	qboolean skipnotify = qfalse;		// NERVE - SMF
 	int prev;							// NERVE - SMF
+	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
+	char newtxt[MAX_STRING_CHARS + 1];
+
 
 	// TTimo - prefix for text that shows up in console but not in notify
 	// backported from RTCW
@@ -447,11 +488,9 @@ void CL_ConsolePrint( char *txt ) {
 		}
 
 		if (killLogNum > 0 && killLogNum < 4) {
-			int i, j;
-			char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
+			int j;
 			char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
 			char *cs;
-			char newtxt[MAX_STRING_CHARS + 1];
 			int temp, team;
 			for (i = 0; ; i++) {
 				if (!search[i])
@@ -469,38 +508,10 @@ void CL_ConsolePrint( char *txt ) {
 						player2[temp - 1] = 0;
 					}
 
-					team = 2;
-					for (j = 0; j < 64; j++) {
-						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
-							team = atoi(Info_ValueForKey(cs, "t"));
-							if (team == TEAM_RED) {
-								team = 1;
-							} else if (team == TEAM_BLUE) {
-								team = 4;
-							} else {
-								team = 2;
-							}
-							break;
-						}
-					}
+					team = nameToTeamColour(player1);
 					sprintf(nplayer1, "^%i%s^7", team, player1);
 
-					team = 2;
-					for (j = 0; j < 64; j++) {
-						cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-						if (!Q_stricmp(Info_ValueForKey(cs, "n"), player2)) {
-							team = atoi(Info_ValueForKey(cs, "t"));
-							if (team == TEAM_RED) {
-								team = 1;
-							} else if (team == TEAM_BLUE) {
-								team = 4;
-							} else {
-								team = 2;
-							}
-							break;
-						}
-					}
+					team = nameToTeamColour(player2);
 					sprintf(nplayer2, "^%i%s^7", team, player2);
 					sprintf(newtxt, search[i], nplayer1, nplayer2);
 					txt = newtxt;
@@ -515,21 +526,7 @@ void CL_ConsolePrint( char *txt ) {
 					}
 
 					if (sscanf(txt, killLogSingle[i], player1, player2) == 2) {
-						team = 2;
-						for (j = 0; j < 64; j++) {
-							cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + j];
-							if (!Q_stricmp(Info_ValueForKey(cs, "n"), player1)) {
-								team = atoi(Info_ValueForKey(cs, "t"));
-								if (team == TEAM_RED) {
-									team = 1;
-								} else if (team == TEAM_BLUE) {
-									team = 4;
-								} else {
-									team = 2;
-								}
-								break;
-							}
-						}
+						team = nameToTeamColour(player1);
 						sprintf(nplayer1, "^%i%s^7", team, player1);
 						sprintf(newtxt, killLogSingle[i], nplayer1, player2);
 						txt = newtxt;
@@ -538,6 +535,53 @@ void CL_ConsolePrint( char *txt ) {
 				}
 			}
 
+		}
+	}
+
+	if (cls.state == CA_ACTIVE && con_coloredHits && con_coloredHits->integer && Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
+		char damageString[12];
+		int damage, damageCol;
+ 
+		for (i = 0; ; i++) {
+			if (!hitLog1[i])
+					break;
+ 
+			if (sscanf(txt, hitLog1[i], player1, player2, damageString) == 3) {
+				damage = atoi(damageString);
+				damageCol = damageToColor(damage);
+				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+				sprintf(newtxt, hitLog1[i], player1, player2, damageString);
+				txt = newtxt;
+				break;
+			}
+		}
+ 
+		for (i = 0; ; i++) {
+			if (!hitLog2[i])
+					break;
+ 
+			if (sscanf(txt, hitLog2[i], player2, damageString) == 2) {
+				damage = atoi(damageString);
+				damageCol = damageToColor(damage);
+				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+				sprintf(newtxt, hitLog2[i], player2, damageString);
+				txt = newtxt;
+				break;
+			}
+		}
+ 
+		for (i = 0; ; i++) {
+			if (!hitLog3[i])
+					break;
+ 
+			if (sscanf(txt, hitLog3[i], player2, damageString) == 2) {
+				damage = atoi(damageString);
+				damageCol = damageToColor(damage);
+				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+				sprintf(newtxt, hitLog3[i], player2, damageString);
+				txt = newtxt;
+				break;
+			}
 		}
 	}
 
