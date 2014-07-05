@@ -395,9 +395,9 @@ int nameToTeamColour(char *name) {
 int damageToColor(int damage) {
   int color;
 
-  	if (damage >= 51) { 
+  	if (damage > 51) { 
   		color = 1;
-  	} else if (damage < 51 && damage >= 44) {
+  	} else if (damage <= 51 && damage >= 44) {
   		color = 8;
  	} else if (damage < 44 && damage >= 19) {
   		color = 3;
@@ -557,16 +557,16 @@ void CL_ConsolePrint( char *txt ) {
 				break;
 			}
 		}
- 
+
 		for (i = 0; ; i++) {
 			if (!hitLog2[i])
 					break;
  
-			if (sscanf(txt, hitLog2[i], player2, damageString) == 2) {
+			if (sscanf(txt, hitLog2[i], player1, player2, damageString) == 3) {
 				damage = atoi(damageString);
 				damageCol = damageToColor(damage);
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog2[i], player2, damageString);
+				sprintf(newtxt, hitLog2[i], player1, player2, damageString);
 				txt = newtxt;
 				break;
 			}
@@ -581,6 +581,20 @@ void CL_ConsolePrint( char *txt ) {
 				damageCol = damageToColor(damage);
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
 				sprintf(newtxt, hitLog3[i], player2, damageString);
+				txt = newtxt;
+				break;
+			}
+		}
+ 
+		for (i = 0; ; i++) {
+			if (!hitLog4[i])
+					break;
+ 
+			if (sscanf(txt, hitLog4[i], player2, damageString) == 2) {
+				damage = atoi(damageString);
+				damageCol = damageToColor(damage);
+				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+				sprintf(newtxt, hitLog4[i], player2, damageString);
 				txt = newtxt;
 				break;
 			}
