@@ -747,16 +747,23 @@ void Con_DrawInput (void) {
 	int promptLen = strlen(con_consolePrompt->string) + 1;
  	int i;
  	char *prompt;
+ 	qtime_t curTime;
+	Com_RealTime(&curTime);
+ 	
  	if (con_timePrompt->integer && con_timePrompt12->integer == 0) {
-		qtime_t curTime;
-		Com_RealTime(&curTime);
 		prompt = Z_Malloc(promptLen + 11);
 		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
 	} else if (con_timePrompt->integer && con_timePrompt12->integer == 1) {
-		qtime_t curTime;
-		Com_RealTime(&curTime);
-		prompt = Z_Malloc(promptLen + 11);
+		prompt = Z_Malloc(promptLen + 15);
+		if (curTime.tm_hour > 12) {
 		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour - 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		} else if (curTime.tm_hour == 12) {
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		} else if (curTime.tm_hour == 0) {
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		} else {
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);	
+		}
 	} else {
 		prompt = Z_Malloc(promptLen);
 		Com_sprintf(prompt, promptLen, "%s", con_consolePrompt->string);
@@ -772,7 +779,6 @@ void Con_DrawInput (void) {
 	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH, y,
 		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue);
 }
-
 
 /*
 ================
