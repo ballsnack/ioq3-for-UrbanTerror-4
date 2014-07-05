@@ -24,7 +24,7 @@
 + `clan [clantag]` - add a clantag to your name
 + `cl_clanpos [0|1]` - change the position of the clantag
 + `con_coloredKills [0|1]` - disable/enable colored player names in the killfeed in the console
-+ `con_coloredHits [0|1]` - disable/enable colored % damage in console
++ `con_coloredHits [0|2]` - disable/enable colored % damage in console
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

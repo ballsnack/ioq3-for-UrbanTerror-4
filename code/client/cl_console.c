@@ -422,10 +422,13 @@ void CL_ConsolePrint( char *txt ) {
 	int		c, l;
 	int		color;
 	int 	i;
+	int 	team;
 	qboolean skipnotify = qfalse;		// NERVE - SMF
 	int prev;							// NERVE - SMF
 	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
 	char newtxt[MAX_STRING_CHARS + 1];
+	char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
+
 
 
 	// TTimo - prefix for text that shows up in console but not in notify
@@ -491,9 +494,8 @@ void CL_ConsolePrint( char *txt ) {
 
 		if (killLogNum > 0 && killLogNum < 4) {
 			int j;
-			char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
 			char *cs;
-			int temp, team;
+			int temp;
 			for (i = 0; ; i++) {
 				if (!search[i])
 					break;
@@ -551,8 +553,20 @@ void CL_ConsolePrint( char *txt ) {
 			if (sscanf(txt, hitLog1[i], player1, player2, damageString) == 3) {
 				damage = atoi(damageString);
 				damageCol = damageToColor(damage);
+
+				if (con_coloredHits->integer == 2) {
+					team = nameToTeamColour(player1);
+					sprintf(nplayer1, "^%i%s^7", team, player1);
+
+					team = nameToTeamColour(player2);
+					sprintf(nplayer2, "^%i%s^7", team, player2);
+				} else {
+					sprintf(nplayer1, "%s", player1);
+					sprintf(nplayer2, "%s", player2);
+				}
+
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog1[i], player1, player2, damageString);
+				sprintf(newtxt, hitLog1[i], nplayer1, nplayer2, damageString);
 				txt = newtxt;
 				break;
 			}
@@ -565,8 +579,20 @@ void CL_ConsolePrint( char *txt ) {
 			if (sscanf(txt, hitLog2[i], player1, player2, damageString) == 3) {
 				damage = atoi(damageString);
 				damageCol = damageToColor(damage);
+
+				if (con_coloredHits->integer == 2) {
+					team = nameToTeamColour(player1);
+					sprintf(nplayer1, "^%i%s^7", team, player1);
+
+					team = nameToTeamColour(player2);
+					sprintf(nplayer2, "^%i%s^7", team, player2);
+				} else {
+					sprintf(nplayer1, "%s", player1);
+					sprintf(nplayer2, "%s", player2);
+				}
+
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog2[i], player1, player2, damageString);
+				sprintf(newtxt, hitLog2[i], nplayer1, nplayer2, damageString);
 				txt = newtxt;
 				break;
 			}
@@ -579,8 +605,16 @@ void CL_ConsolePrint( char *txt ) {
 			if (sscanf(txt, hitLog3[i], player2, damageString) == 2) {
 				damage = atoi(damageString);
 				damageCol = damageToColor(damage);
+
+				if (con_coloredHits->integer == 2) {
+					team = nameToTeamColour(player2);
+					sprintf(nplayer2, "^%i%s^7", team, player2);
+				} else {
+					sprintf(nplayer2, "%s", player2);
+				}
+
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog3[i], player2, damageString);
+				sprintf(newtxt, hitLog3[i], nplayer2, damageString);
 				txt = newtxt;
 				break;
 			}
@@ -593,6 +627,14 @@ void CL_ConsolePrint( char *txt ) {
 			if (sscanf(txt, hitLog4[i], player2, damageString) == 2) {
 				damage = atoi(damageString);
 				damageCol = damageToColor(damage);
+
+				if (con_coloredHits->integer == 2) {
+					team = nameToTeamColour(player2);
+					sprintf(nplayer2, "^%i%s^7", team, player2);
+				} else {
+					sprintf(nplayer2, "%s", player2);
+				}
+
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
 				sprintf(newtxt, hitLog4[i], player2, damageString);
 				txt = newtxt;
@@ -600,6 +642,7 @@ void CL_ConsolePrint( char *txt ) {
 			}
 		}
 	}
+
 
 	color = ColorIndex(COLOR_WHITE);
 
