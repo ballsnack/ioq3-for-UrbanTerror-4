@@ -399,7 +399,7 @@ int damageToColor(int damage) {
   		color = 1;
   	} else if (damage <= 51 && damage >= 44) {
   		color = 8;
- 	} else if (damage < 44 && damage >= 19) {
+ 	} else if (damage < 44 && damage >= 17) {
   		color = 3;
 	} else {
 		color = 2;
@@ -636,13 +636,12 @@ void CL_ConsolePrint( char *txt ) {
 				}
 
 				sprintf(damageString, "^%i%i%%^7", damageCol, damage);
-				sprintf(newtxt, hitLog4[i], player2, damageString);
+				sprintf(newtxt, hitLog4[i], nplayer2, damageString);
 				txt = newtxt;
 				break;
 			}
 		}
 	}
-
 
 	color = ColorIndex(COLOR_WHITE);
 
