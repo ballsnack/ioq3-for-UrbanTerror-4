@@ -395,12 +395,14 @@ int nameToTeamColour(char *name) {
 int damageToColor(int damage) {
   int color;
 
-  	if (damage >= 60) { 
+  	if (damage >= 51) { 
   		color = 1;
-  	} else if (damage < 60 && damage >= 30) {
+  	} else if (damage < 51 && damage >= 44) {
+  		color = 8;
+ 	} else if (damage < 44 && damage >= 19) {
   		color = 3;
- 	} else {
-  		color = 2;
+	} else {
+		color = 2;
 	}
 
 	return color;
