@@ -70,6 +70,7 @@ cvar_t 		*con_timePrompt;
 cvar_t 		*con_timePrompt12;
 cvar_t 		*con_drawscrollbar;
 cvar_t 		*con_consoleHeight;
+cvar_t 		*con_fadeIn;
 
 cvar_t 	*con_nochat;
 qboolean suppressNext = qfalse;
@@ -77,6 +78,38 @@ qboolean suppressNext = qfalse;
 #define	DEFAULT_CONSOLE_WIDTH	78
 
 vec4_t	console_color = {1.0, 1.0, 1.0, 1.0};
+
+float opacityMult = 1;
+float targetOpacityMult = 1;
+void Con_RE_SetColor(vec4_t colour) {
+	vec4_t c;
+	if (colour) {
+		c[0] = colour[0];
+		c[1] = colour[1];
+		c[2] = colour[2];
+		c[3] = colour[3] * opacityMult;
+		re.SetColor(c);
+	} else {
+		re.SetColor(NULL);
+	}
+}
+
+void SCR_AdjustedFillRect(float x, float y, float width, float height, const float *color) {
+	vec4_t c;
+	if (color) {
+		c[0] = color[0];
+		c[1] = color[1];
+		c[2] = color[2];
+		c[3] = color[3] * opacityMult;
+	} else {
+		c[0] = 1;
+		c[1] = 1;
+		c[2] = 1;
+		c[3] = opacityMult;
+	}
+
+	SCR_FillRect(x, y, width, height, c);
+}
 
 
 /*
@@ -337,8 +370,9 @@ void Con_Init (void) {
 	con_promptColor = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_timePrompt12 = Cvar_Get("con_timePrompt12", "1", CVAR_ARCHIVE);
-	con_drawscrollbar = Cvar_Get("con_drawscrollbar", "1", CVAR_ARCHIVE);
+	con_drawscrollbar = Cvar_Get("con_drawscrollbar", "0", CVAR_ARCHIVE);
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
+	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -482,7 +516,7 @@ void CL_ConsolePrint( char *txt ) {
 			strstr(txt, "^7: ^3") || 
 			strstr(txt, "^7]: ^3") || 
 			strstr(txt, "server:") ||
-			strstr(txt, "^8(^2b3^8)")) {
+			strstr(txt, "^0(^2b3^0)")) {
 			suppressNext = qtrue;
 			return;
 		} else if (suppressNext) {
@@ -742,10 +776,10 @@ void Con_DrawInput (void) {
 
 	y = con.vislines - ( SMALLCHAR_HEIGHT * 2 );
 
-	re.SetColor( con.color );
+	Con_RE_SetColor( con.color );
 
 	if (con_promptColor->integer >= 0 && con_promptColor->integer < 10) {
- 		re.SetColor(g_color_table[con_promptColor->integer]);
+ 		Con_RE_SetColor(g_color_table[con_promptColor->integer]);
  	}
 
 	int promptLen = strlen(con_prompt->string) + 1;
@@ -778,8 +812,9 @@ void Con_DrawInput (void) {
  		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, prompt[i]);
  	}
 
- 	re.SetColor(con.color);
+ 	Con_RE_SetColor(con.color);
 
+ 	if (opacityMult)
 	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH, y,
 		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue);
 }
@@ -804,7 +839,7 @@ void Con_DrawNotify (void)
 	chatcolor = cl_chatcolor->integer;
 
 	currentColor = 7;
-	re.SetColor( g_color_table[currentColor] );
+	Con_RE_SetColor( g_color_table[currentColor] );
 
 	v = 0;
 	for (i= con.current-NUM_CON_TIMES+1 ; i<=con.current ; i++)
@@ -829,7 +864,7 @@ void Con_DrawNotify (void)
 			}
 			if ( ( (text[x]>>8)&7 ) != currentColor ) {
 				currentColor = (text[x]>>8)&7;
-				re.SetColor( g_color_table[currentColor] );
+				Con_RE_SetColor( g_color_table[currentColor] );
 			}
 			SCR_DrawSmallChar( cl_conXOffset->integer + con.xadjust + (x+1)*SMALLCHAR_WIDTH, v, text[x] & 0xff );
 		}
@@ -837,7 +872,7 @@ void Con_DrawNotify (void)
 		v += SMALLCHAR_HEIGHT;
 	}
 
-	re.SetColor( NULL );
+	Con_RE_SetColor( NULL );
 
 	if (cls.keyCatchers & (KEYCATCH_UI | KEYCATCH_CGAME) ) {
 		return;
@@ -906,18 +941,18 @@ void Con_DrawSolidConsole( float frac ) {
    		colorBlack[1] = 0.0/255.0;
    		colorBlack[2] = 0.0/255.0;
    		colorBlack[3] = 0.9;
- 		SCR_FillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
+ 		SCR_AdjustedFillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
  	}
   		colorBG[0] = 0.0/255.0;
  		colorBG[1] = 100.0/255.0;
  		colorBG[2] = 100.0/255.0;
  		colorBG[3] = 1;
- 		SCR_FillRect(0, y, SCREEN_WIDTH, 2, colorBG);
+ 		SCR_AdjustedFillRect(0, y, SCREEN_WIDTH, 2, colorBG);
 
 
 	// draw the version number
 
-	re.SetColor(colorBG);
+	Con_RE_SetColor(colorBG);
 
 	i = strlen( SVN_VERSION );
 
@@ -940,7 +975,7 @@ void Con_DrawSolidConsole( float frac ) {
 	if (con.display != con.current)
 	{
 	// draw arrows to show the buffer is backscrolled
-		re.SetColor(colorBG);
+		Con_RE_SetColor(colorBG);
 		for (x=0 ; x<con.linewidth ; x+=4)
 			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
 		y -= SMALLCHAR_HEIGHT;
@@ -968,9 +1003,9 @@ void Con_DrawSolidConsole( float frac ) {
 			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
 			scrollbarPos = (con.display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
 			
-			SCR_FillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
 			scrollbarBG[3] = 0.8;
-			SCR_FillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
 		}
 	}
 	
@@ -981,7 +1016,7 @@ void Con_DrawSolidConsole( float frac ) {
 	}
 
 	currentColor = 7;
-	re.SetColor( g_color_table[currentColor] );
+	Con_RE_SetColor( g_color_table[currentColor] );
 
 	for (i=0 ; i<rows ; i++, y -= SMALLCHAR_HEIGHT, row--)
 	{
@@ -1001,7 +1036,7 @@ void Con_DrawSolidConsole( float frac ) {
 
 			if ( ( (text[x]>>8)&7 ) != currentColor ) {
 				currentColor = (text[x] >> 8) % 10;
-				re.SetColor( g_color_table[currentColor] );
+				Con_RE_SetColor( g_color_table[currentColor] );
 			}
 			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, text[x] & 0xff );
 		}
@@ -1010,7 +1045,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw the input prompt, user text, and cursor if desired
 	Con_DrawInput ();
 
-	re.SetColor( NULL );
+	Con_RE_SetColor( NULL );
 }
 
 
@@ -1053,14 +1088,38 @@ Scroll it up or down
 */
 void Con_RunConsole (void) {
 	// decide on the destination height of the console
-	if ( cls.keyCatchers & KEYCATCH_CONSOLE )
+	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
 		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
 			con.finalFrac = con_consoleHeight->integer / 100.0;
 		else 
 			con.finalFrac = 0.5;		// half screen
-	else
+
+		targetOpacityMult = 1;
+	} else {
 		con.finalFrac = 0;				// none visible
-	
+
+		targetOpacityMult = 0;
+	}
+
+	if (con_fadeIn && con_fadeIn->integer) {
+		float moveDist = con_conspeed->value*cls.realFrametime*0.001;
+		if (targetOpacityMult < opacityMult) {
+			opacityMult -= moveDist;
+			if (opacityMult < targetOpacityMult)
+				opacityMult = targetOpacityMult;
+		} else if (targetOpacityMult > opacityMult) {
+			opacityMult += moveDist;
+			if (opacityMult > targetOpacityMult)
+				opacityMult = targetOpacityMult;
+		}
+
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
+			con.finalFrac = con_consoleHeight->integer / 100.0;
+		else 
+			con.finalFrac = 0.5;		// half screen
+		con.displayFrac = con.finalFrac;
+	}
+
 	// scroll towards the destination height
 	if (con.finalFrac < con.displayFrac)
 	{

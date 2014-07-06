@@ -28,8 +28,9 @@
 + `con_consolePrompt [string]` - change the `]` that is shown in the console when typing
 + `con_promptColor [1|9]` - change the color of the console prompt (`]`)
 + `con_timePrompt [0|1]` - show the time before the console prompt
-+ `con_timePrompt12 [0|1]` - use 12 hour time for the timr prompt
++ `con_timePrompt12 [0|1]` - use 12 hour time for the time prompt
 + `con_drawscrollbar [0|1]` - draw scrollbar in console
++ `con_fadeIn [0|1]` - use fadeing animation instead of dropping animation for the console
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
