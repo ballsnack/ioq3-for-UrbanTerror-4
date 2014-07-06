@@ -44,6 +44,7 @@ typedef struct {
 	int		totallines;		// total lines in console scrollback
 
 	float	xadjust;		// for wide aspect screens
+	float 	yadjust;
 
 	float	displayFrac;	// aproaches finalFrac at scr_conspeed
 	float	finalFrac;		// 0.0 to 1.0 lines of console to display
@@ -71,6 +72,7 @@ cvar_t 		*con_timePrompt12;
 cvar_t 		*con_drawscrollbar;
 cvar_t 		*con_consoleHeight;
 cvar_t 		*con_fadeIn;
+cvar_t 		*con_margin;
 
 cvar_t 	*con_nochat;
 qboolean suppressNext = qfalse;
@@ -110,6 +112,11 @@ void SCR_AdjustedFillRect(float x, float y, float width, float height, const flo
 
 	SCR_FillRect(x, y, width, height, c);
 }
+
+#define BOX_MARGIN 30
+
+int adjustedScreenWidth = SCREEN_WIDTH;
+int margin = 0;
 
 
 /*
@@ -297,7 +304,7 @@ void Con_CheckResize (void)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	short	tbuf[CON_TEXTSIZE];
 
-	width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
+	width = (adjustedScreenWidth / SMALLCHAR_WIDTH) - 2;
 
 	if (width == con.linewidth)
 		return;
@@ -373,6 +380,7 @@ void Con_Init (void) {
 	con_drawscrollbar = Cvar_Get("con_drawscrollbar", "0", CVAR_ARCHIVE);
 	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
+	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -809,14 +817,14 @@ void Con_DrawInput (void) {
 
 	promptLen = strlen(prompt);
  	for (i = 0; i < promptLen; i++) {
- 		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH, y, prompt[i]);
+ 		SCR_DrawSmallChar( con.xadjust + (i + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin *2, prompt[i]);
  	}
 
  	Con_RE_SetColor(con.color);
 
  	if (opacityMult)
-	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH, y,
-		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue);
+	Field_Draw( &g_consoleField, con.xadjust + (promptLen + 1) * SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2,
+		adjustedScreenWidth - 3 * SMALLCHAR_WIDTH, qtrue);
 }
 
 /*
@@ -895,7 +903,7 @@ void Con_DrawNotify (void)
 		}
 
 		Field_BigDraw( &chatField, skip * BIGCHAR_WIDTH, v,
-			SCREEN_WIDTH - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue );
+			adjustedScreenWidth - ( skip + 1 ) * BIGCHAR_WIDTH, qtrue );
 
 		v += BIGCHAR_HEIGHT;
 	}
@@ -926,6 +934,9 @@ void Con_DrawSolidConsole( float frac ) {
 	if (lines > cls.glconfig.vidHeight )
 		lines = cls.glconfig.vidHeight;
 
+	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50)
+		lines -= margin - SMALLCHAR_HEIGHT;
+
 	// on wide screens, we will center the text
 	con.xadjust = 0;
 	SCR_AdjustFrom640( &con.xadjust, NULL, NULL, NULL );
@@ -941,13 +952,25 @@ void Con_DrawSolidConsole( float frac ) {
    		colorBlack[1] = 0.0/255.0;
    		colorBlack[2] = 0.0/255.0;
    		colorBlack[3] = 0.9;
- 		SCR_AdjustedFillRect(0, 0, SCREEN_WIDTH, y, colorBlack);
+ 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, y, colorBlack);
  	}
   		colorBG[0] = 0.0/255.0;
  		colorBG[1] = 100.0/255.0;
  		colorBG[2] = 100.0/255.0;
  		colorBG[3] = 1;
- 		SCR_AdjustedFillRect(0, y, SCREEN_WIDTH, 2, colorBG);
+ 		
+ 		if (margin) {
+			int conPixHeight = 480;
+			if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
+				conPixHeight = con_consoleHeight->integer/100.0 * SCREEN_HEIGHT;
+		}
+		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, colorBG);
+		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight, colorBG);
+		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight, colorBG);
+		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 1, colorBG);
+	} else {
+		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, colorBG);
+	}
 
 
 	// draw the version number
@@ -958,9 +981,9 @@ void Con_DrawSolidConsole( float frac ) {
 
 	for (x=0 ; x<i ; x++) {
 
-		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH, 
+		SCR_DrawSmallChar( cls.glconfig.vidWidth - ( i - x ) * SMALLCHAR_WIDTH - margin * 2,  
 
-			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)), SVN_VERSION[x] );
+			(lines-(SMALLCHAR_HEIGHT+SMALLCHAR_HEIGHT/2)) + margin, SVN_VERSION[x] );
 
 	}
 
@@ -977,7 +1000,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw arrows to show the buffer is backscrolled
 		Con_RE_SetColor(colorBG);
 		for (x=0 ; x<con.linewidth ; x+=4)
-			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, '^' );
+			SCR_DrawSmallChar( con.xadjust + (x+1)*SMALLCHAR_WIDTH + margin, y + margin * 2, '^' );
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
@@ -1003,9 +1026,9 @@ void Con_DrawSolidConsole( float frac ) {
 			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
 			scrollbarPos = (con.display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
 			
-			SCR_AdjustedFillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618 - margin, margin + 30, 2, scrollbarBGHeight, scrollbarBG);
 			scrollbarBG[3] = 0.8;
-			SCR_AdjustedFillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
+			SCR_AdjustedFillRect(618 - margin, margin + 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
 		}
 	}
 	
@@ -1020,6 +1043,10 @@ void Con_DrawSolidConsole( float frac ) {
 
 	for (i=0 ; i<rows ; i++, y -= SMALLCHAR_HEIGHT, row--)
 	{
+		if (margin && y < (margin / 8)) {
+			break;
+		}
+
 		if (row < 0)
 			break;
 		if (con.current - row >= con.totallines) {
@@ -1038,7 +1065,7 @@ void Con_DrawSolidConsole( float frac ) {
 				currentColor = (text[x] >> 8) % 10;
 				Con_RE_SetColor( g_color_table[currentColor] );
 			}
-			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH, y, text[x] & 0xff );
+			SCR_DrawSmallChar(  con.xadjust + (x+1)*SMALLCHAR_WIDTH + ((float)margin * 1.5), y + margin * 2, text[x] & 0xff );
 		}
 	}
 
@@ -1087,6 +1114,15 @@ Scroll it up or down
 ==================
 */
 void Con_RunConsole (void) {
+	adjustedScreenWidth = SCREEN_WIDTH;
+	margin = 0;
+	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50) {
+		Cvar_Set("con_fadeIn", "1");
+		adjustedScreenWidth = SCREEN_WIDTH - con_margin->integer * 2;
+		margin = con_margin->integer;
+		con.yadjust = margin;
+	}
+
 	// decide on the destination height of the console
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE ) {
 		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)

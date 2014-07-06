@@ -31,6 +31,7 @@
 + `con_timePrompt12 [0|1]` - use 12 hour time for the time prompt
 + `con_drawscrollbar [0|1]` - draw scrollbar in console
 + `con_fadeIn [0|1]` - use fadeing animation instead of dropping animation for the console
++ `con_margin [0|50]` - add margins to the console to make it a floating box
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
