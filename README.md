@@ -29,6 +29,7 @@
 + `con_promptColor [1|9]` - change the color of the console prompt (`]`)
 + `con_timePrompt [0|1]` - show the time before the console prompt
 + `con_timePrompt12 [0|1]` - use 12 hour time for the timr prompt
++ `con_drawscrollbar [0|1]` - draw scrollbar in console
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

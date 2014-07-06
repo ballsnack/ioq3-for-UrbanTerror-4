@@ -3065,6 +3065,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("video", CL_Video_f );
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
+	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	CL_InitRef();
 
 	SCR_Init ();
@@ -4042,7 +4043,7 @@ void CL_Maplist_f(void) {
   sysInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
   paks = Info_ValueForKey(sysInfo, "sv_pakNames");
 
-  Com_Printf("Current server maplist:\n-----------------------\n");
+  Com_Printf("Maps:-\n");
 
   map = strtok(paks, " ");
   while (map != NULL) {
@@ -4051,6 +4052,4 @@ void CL_Maplist_f(void) {
     }
     map = strtok(NULL, " ");
   }
-
-  Com_Printf("-----------------------\nEnd of current maplist\n");
 }

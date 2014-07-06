@@ -64,10 +64,12 @@ cvar_t		*con_notifytime;
 cvar_t 		*cl_chatcolor;
 cvar_t		*con_coloredKills;
 cvar_t 		*con_coloredHits;
-cvar_t 		*con_consolePrompt;
+cvar_t 		*con_prompt;
 cvar_t 		*con_promptColor;
 cvar_t 		*con_timePrompt;
 cvar_t 		*con_timePrompt12;
+cvar_t 		*con_drawscrollbar;
+cvar_t 		*con_consoleHeight;
 
 cvar_t 	*con_nochat;
 qboolean suppressNext = qfalse;
@@ -331,10 +333,12 @@ void Con_Init (void) {
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
 	con_coloredKills = Cvar_Get("con_coloredKills", "0", CVAR_ARCHIVE);
 	con_coloredHits = Cvar_Get("con_coloredHits", "0", CVAR_ARCHIVE);
-	con_consolePrompt = Cvar_Get("con_consolePrompt", "]", CVAR_ARCHIVE);
+	con_prompt = Cvar_Get("con_prompt", "]", CVAR_ARCHIVE);
 	con_promptColor = Cvar_Get("con_promptColor", "7", CVAR_ARCHIVE);
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_timePrompt12 = Cvar_Get("con_timePrompt12", "1", CVAR_ARCHIVE);
+	con_drawscrollbar = Cvar_Get("con_drawscrollbar", "1", CVAR_ARCHIVE);
+	con_consoleHeight = Cvar_Get("con_consoleHeight", "50", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -744,7 +748,7 @@ void Con_DrawInput (void) {
  		re.SetColor(g_color_table[con_promptColor->integer]);
  	}
 
-	int promptLen = strlen(con_consolePrompt->string) + 1;
+	int promptLen = strlen(con_prompt->string) + 1;
  	int i;
  	char *prompt;
  	qtime_t curTime;
@@ -752,21 +756,21 @@ void Con_DrawInput (void) {
  	
  	if (con_timePrompt->integer && con_timePrompt12->integer == 0) {
 		prompt = Z_Malloc(promptLen + 11);
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);
 	} else if (con_timePrompt->integer && con_timePrompt12->integer == 1) {
 		prompt = Z_Malloc(promptLen + 15);
 		if (curTime.tm_hour > 12) {
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour - 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour - 12, curTime.tm_min, curTime.tm_sec, con_prompt->string);
 		} else if (curTime.tm_hour == 12) {
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_prompt->string);
 		} else if (curTime.tm_hour == 0) {
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", 12, curTime.tm_min, curTime.tm_sec, con_prompt->string);
 		} else {
-		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_consolePrompt->string);	
+		Com_sprintf(prompt, promptLen + 11, "[%02i:%02i:%02i] %s", curTime.tm_hour, curTime.tm_min, curTime.tm_sec, con_prompt->string);	
 		}
 	} else {
 		prompt = Z_Malloc(promptLen);
-		Com_sprintf(prompt, promptLen, "%s", con_consolePrompt->string);
+		Com_sprintf(prompt, promptLen, "%s", con_prompt->string);
 	}
 
 	promptLen = strlen(prompt);
@@ -942,6 +946,33 @@ void Con_DrawSolidConsole( float frac ) {
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
+
+	if (con_drawscrollbar->integer) {
+		vec4_t scrollbarBG;
+		scrollbarBG[0] = scrollbarBG[1] = scrollbarBG[2] = 1;
+		scrollbarBG[3] = 0.2;
+
+		int scrollbarBGHeight;
+		int visibleHeight;
+		int scrollbarPos;
+		int totalLines = con.current;
+		int visible = rows;
+
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100) {
+			scrollbarBGHeight = ((con_consoleHeight->integer/100.0) * SCREEN_HEIGHT) - 60;
+		} else {
+			scrollbarBGHeight = 180;
+		}
+
+		if (scrollbarBGHeight >= 10) {
+			visibleHeight = visible / (float)totalLines * scrollbarBGHeight;
+			scrollbarPos = (con.display - rows) / (float)(totalLines - rows) * (scrollbarBGHeight - visibleHeight);
+			
+			SCR_FillRect(618, 30, 2, scrollbarBGHeight, scrollbarBG);
+			scrollbarBG[3] = 0.8;
+			SCR_FillRect(618, 30 + scrollbarPos, 2, visibleHeight, scrollbarBG);
+		}
+	}
 	
 	row = con.display;
 
@@ -1023,7 +1054,10 @@ Scroll it up or down
 void Con_RunConsole (void) {
 	// decide on the destination height of the console
 	if ( cls.keyCatchers & KEYCATCH_CONSOLE )
-		con.finalFrac = 0.5;		// half screen
+		if (con_consoleHeight->integer >= 0 && con_consoleHeight->integer <= 100)
+			con.finalFrac = con_consoleHeight->integer / 100.0;
+		else 
+			con.finalFrac = 0.5;		// half screen
 	else
 		con.finalFrac = 0;				// none visible
 	
