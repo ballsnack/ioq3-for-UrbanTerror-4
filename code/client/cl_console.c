@@ -367,7 +367,7 @@ void Con_Init (void) {
 	int		i;
 
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
-	con_conspeed = Cvar_Get ("scr_conspeed", "3", 0);
+	con_conspeed = Cvar_Get ("scr_conspeed", "3", CVAR_ARCHIVE);
 	cl_chatcolor = Cvar_Get("cl_chatcolor", "7", CVAR_ARCHIVE);
 
 	con_nochat = Cvar_Get("con_nochat", "0", CVAR_ARCHIVE);
@@ -965,8 +965,8 @@ void Con_DrawSolidConsole( float frac ) {
 				conPixHeight = con_consoleHeight->integer/100.0 * SCREEN_HEIGHT;
 		}
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, 1, colorBG);
-		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight, colorBG);
-		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight, colorBG);
+		SCR_AdjustedFillRect(margin, margin, 1, conPixHeight - 1, colorBG);
+ 		SCR_AdjustedFillRect(margin + adjustedScreenWidth - 1, margin, 1, conPixHeight - 1, colorBG);
 		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 1, colorBG);
 	} else {
 		SCR_AdjustedFillRect(margin, y + margin, adjustedScreenWidth, 2, colorBG);
