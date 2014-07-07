@@ -934,9 +934,6 @@ void Con_DrawSolidConsole( float frac ) {
 	if (lines > cls.glconfig.vidHeight )
 		lines = cls.glconfig.vidHeight;
 
-	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50)
-		lines -= margin - SMALLCHAR_HEIGHT;
-
 	// on wide screens, we will center the text
 	con.xadjust = 0;
 	SCR_AdjustFrom640( &con.xadjust, NULL, NULL, NULL );
@@ -1153,24 +1150,26 @@ void Con_RunConsole (void) {
 			con.finalFrac = con_consoleHeight->integer / 100.0;
 		else 
 			con.finalFrac = 0.5;		// half screen
-		con.displayFrac = con.finalFrac;
-	}
-
-	// scroll towards the destination height
-	if (con.finalFrac < con.displayFrac)
-	{
-		con.displayFrac -= con_conspeed->value*cls.realFrametime*0.001;
-		if (con.finalFrac > con.displayFrac)
+		if (!targetOpacityMult && !opacityMult)
+			con.displayFrac = 0;
+		else
 			con.displayFrac = con.finalFrac;
-
-	}
-	else if (con.finalFrac > con.displayFrac)
-	{
-		con.displayFrac += con_conspeed->value*cls.realFrametime*0.001;
+	} else {
+		// scroll towards the destination height
 		if (con.finalFrac < con.displayFrac)
-			con.displayFrac = con.finalFrac;
-	}
+		{
+			con.displayFrac -= con_conspeed->value*cls.realFrametime*0.001;
+			if (con.finalFrac > con.displayFrac)
+				con.displayFrac = con.finalFrac;
 
+		}
+		else if (con.finalFrac > con.displayFrac)
+		{
+			con.displayFrac += con_conspeed->value*cls.realFrametime*0.001;
+			if (con.finalFrac < con.displayFrac)
+				con.displayFrac = con.finalFrac;
+		}
+	}
 }
 
 
