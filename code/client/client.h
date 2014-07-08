@@ -227,9 +227,6 @@ typedef struct {
 
 	// big stuff at end of structure so most offsets are 15 bits or less
 	netchan_t	netchan;
-
-	char 		g_teamnamered[33];
-	char 		g_teamnameblue[33];
 } clientConnection_t;
 
 extern	clientConnection_t clc;

@@ -164,19 +164,26 @@ void CL_AddReliableCommand( const char *cmd ) {
   int 	numToks = 0;
   int 	health;
   char 	healthLen[4];
-  char 	*s, *s2, *tokPos, *teamname;
+  char 	*s, *s2, *tokPos, *teamname, *pname, *serverInfo;
   char 	teamLen[33];
 
   health = cl.snap.ps.stats[0];
 
+  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+
+  serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
   if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-  	teamname = clc.g_teamnamered;
+    teamname = Info_ValueForKey(serverInfo, "g_teamnamered");
+    if (!teamname)
+      teamname = "Red Dragons";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-  	teamname = clc.g_teamnameblue;
+    teamname = Info_ValueForKey(serverInfo, "g_teamnameblue");
+    if (!teamname)
+      teamname = "SWAT";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
-  	teamname = "";
+    teamname = "";
   } else {
-  	teamname = "spectator";
+    teamname = "Spectator";
   }
 
   s = cmd;
@@ -203,6 +210,18 @@ void CL_AddReliableCommand( const char *cmd ) {
   	numToks++;
   }
 
+  s = cmd;
+  while ((s = strstr(s, "$p"))) {
+  	s += 5;
+  	numToks++;
+  }
+
+  s = cmd;
+  while ((s, strstr(s, "#p"))) {
+  	s += 5;
+  	numToks++;
+  }
+
   s = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
   s2 = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
   strncpy(s, cmd, strlen(cmd) + 1);
@@ -225,6 +244,15 @@ void CL_AddReliableCommand( const char *cmd ) {
   	pos = tokPos - s;
   	s[pos] = '\0';
   	sprintf(s, "%s%s%s", s, teamname, s2 + pos + 5);
+  }
+
+  cmd = s;
+
+  while ((tokPos = strstr(s, "$p")) != NULL || (tokPos = strstr(s, "#p")) != NULL) {
+  	sprintf(s2, "%s", s);
+  	pos = tokPos - s;
+  	s[pos] = '\0';
+  	sprintf(s, "%s%s%s", s, pname, s2 + pos + 2);
   }
 
   cmd = s;
