@@ -446,14 +446,28 @@ int nameToTeamColour(char *name) {
 	return team;
 }
 
-int damageToColor(int damage) {
-  int color;
+int color;
 
+int damageToColor(int damage) {
   	if (damage > 51) { 
   		color = 1;
   	} else if (damage <= 51 && damage >= 44) {
   		color = 8;
  	} else if (damage < 44 && damage >= 17) {
+  		color = 3;
+	} else {
+		color = 2;
+	}
+
+	return color;
+}
+
+int damageToColor2(int damage) {
+  	if (damage < 17) { 
+  		color = 1;
+  	} else if (damage >= 17 && damage <= 44) {
+  		color = 8;
+ 	} else if (damage > 44 && damage <= 51) {
   		color = 3;
 	} else {
 		color = 2;
@@ -482,7 +496,9 @@ void CL_ConsolePrint( char *txt ) {
 	char player1[MAX_NAME_LENGTH + 1], player2[MAX_NAME_LENGTH + 1];
 	char newtxt[MAX_STRING_CHARS + 1];
 	char nplayer1[MAX_NAME_LENGTH + 5], nplayer2[MAX_NAME_LENGTH + 5];
-
+	char damageString[12];
+	int  damage, damageCol;
+ 
 
 
 	// TTimo - prefix for text that shows up in console but not in notify
@@ -536,6 +552,7 @@ void CL_ConsolePrint( char *txt ) {
 
 	if (cls.state == CA_ACTIVE && con_coloredKills && con_coloredKills->integer) {
 		char **search;
+		char *playerhad;
 		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
 		if (killLogNum == 1) {
@@ -544,6 +561,17 @@ void CL_ConsolePrint( char *txt ) {
 			search = killLog2;
 		} else if (killLogNum == 3) {
 			search = killLog3;
+		}
+
+		playerhad = "%s had %s health.";
+		if (sscanf(txt, playerhad, player2, damageString) == 2) {
+			damage = atoi(damageString);
+			damageCol = damageToColor2(damage);
+			team = nameToTeamColour(player2);
+			sprintf(nplayer2, "^%i%s^7", team, player2);
+			sprintf(damageString, "^%i%i%%^7", damageCol, damage);
+			sprintf(newtxt, playerhad, nplayer2, damageString);
+			txt = newtxt;
 		}
 
 		if (killLogNum > 0 && killLogNum < 4) {
@@ -597,9 +625,6 @@ void CL_ConsolePrint( char *txt ) {
 	}
 
 	if (cls.state == CA_ACTIVE && con_coloredHits && con_coloredHits->integer && Cvar_VariableIntegerValue("cg_showbullethits") == 2) {
-		char damageString[12];
-		int damage, damageCol;
- 
 		for (i = 0; ; i++) {
 			if (!hitLog1[i])
 					break;
