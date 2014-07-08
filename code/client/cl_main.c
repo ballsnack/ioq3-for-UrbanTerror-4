@@ -166,24 +166,24 @@ void CL_AddReliableCommand( const char *cmd ) {
   char 	healthLen[4];
   char 	*s, *s2, *tokPos, *teamname, *pname, *serverInfo;
   char 	teamLen[33];
+  char 	currentteam = cl.snap.ps.persistant[PERS_TEAM];
 
   health = cl.snap.ps.stats[0];
 
   pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
 
-  serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
-  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-    teamname = Info_ValueForKey(serverInfo, "g_teamnamered");
-    if (!teamname)
-      teamname = "Red Dragons";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-    teamname = Info_ValueForKey(serverInfo, "g_teamnameblue");
-    if (!teamname)
-      teamname = "SWAT";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
-    teamname = "";
-  } else {
-    teamname = "Spectator";
+  if (currentteam == TEAM_RED) {
+  	teamname = clc.g_teamnamered;
+  	if (!teamname)
+  		teamname = "Red Dragons";
+  } else if (currentteam == TEAM_BLUE) {
+  	teamname = clc.g_teamnameblue;
+  	if (!teamname)
+  		teamname = "SWAT";
+  } else if (currentteam == TEAM_FREE) {
+  	teamname = "";
+  } else if (currentteam == TEAM_SPEC) {
+  	teamname = "Spectator";
   }
 
   s = cmd;

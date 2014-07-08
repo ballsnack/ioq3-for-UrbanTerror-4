@@ -619,6 +619,8 @@ static void CL_ParseServerInfo(void)
 	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
 
 	clc.sv_allowDownload = atoi(Info_ValueForKey(serverInfo, "sv_allowDownload"));
+	Q_strncpyz(clc.g_teamnamered, Info_ValueForKey(serverInfo, "g_teamnamered"), sizeof(clc.g_teamnamered));
+	Q_strncpyz(clc.g_teamnameblue, Info_ValueForKey(serverInfo, "g_teamnameblue"), sizeof(clc.g_teamnameblue));
 	Q_strncpyz(clc.sv_dlURL, Info_ValueForKey(serverInfo, "sv_dlURL"), sizeof(clc.sv_dlURL));
 	Q_strncpyz(clc.mapname, Info_ValueForKey(serverInfo, "mapname"), sizeof(clc.mapname));
 }
