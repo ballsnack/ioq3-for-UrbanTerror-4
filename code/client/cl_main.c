@@ -84,12 +84,9 @@ cvar_t  *cl_mouseAccelStyle;
 
 cvar_t 	*cl_randomrgb;
 cvar_t  *cl_teamchatIndicator;
-cvar_t  *cl_hpSub;
 cvar_t  *cl_randomRGB;
 cvar_t  *clan;
 cvar_t  *cl_clanpos;
-cvar_t  *cl_weapAutoSwitch;
-cvar_t  *cl_weapAutoReload;
 
 void CL_Maplist_f(void);
 
@@ -164,25 +161,72 @@ not have future usercmd_t executed before it is executed
 ======================
 */
 void CL_AddReliableCommand( const char *cmd ) {
-  int   index;
+  int   index, pos;
+  int 	numToks = 0;
+  int 	health;
+  char 	healthLen[4];
+  char 	*s, *s2, *tokPos, *teamname;
+  char 	teamLen[33];
 
-  if (cl_hpSub->value) {
-     int hLen, pos;
-     char health[4];
-     char *s, *varPos;
-     Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-     hLen = strlen(health);
-     s = (char *)malloc(strlen(cmd) + 1);
-     strncpy(s, cmd, strlen(cmd) + 1);
-     
-     while ((varPos = strstr(s, "$hp")) != NULL || (varPos = strstr(s, "#hp")) != NULL) {
-       pos = varPos - s;
-       strncpy(s + pos, health, hLen);
-       pos += hLen;
-       strncpy(s + pos, s + pos + 3 - hLen, strlen(s) - pos);
-     }
-     cmd = s;
+  health = cl.snap.ps.stats[0];
+
+  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+  	teamname = clc.g_teamnamered;
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+  	teamname = clc.g_teamnameblue;
+  } else {
+  	teamname = "spectator";
   }
+
+  s = cmd;
+  while ((s = strstr(s, "$hp"))) {
+  	s += 3;
+  	numToks++;
+  }
+
+  s = cmd;
+  while ((s = strstr(s, "#hp"))) {
+  	s += 3;
+  	numToks++;
+  }
+
+  s = cmd;
+  while ((s = strstr(s, "$team"))) {
+  	s += 5;
+  	numToks++;
+  }
+
+  s = cmd;
+  while ((s, strstr(s, "#team"))) {
+  	s += 5;
+  	numToks++;
+  }
+
+  s = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
+  s2 = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
+  strncpy(s, cmd, strlen(cmd) + 1);
+
+  s = (char *)malloc(strlen(cmd) + strlen(teamLen) * numToks + 1);
+  s2 = (char *)malloc(strlen(cmd) + strlen(teamLen) * numToks + 1);
+  strncpy(s, cmd, strlen(cmd) + 1);
+
+  while ((tokPos = strstr(s, "$hp")) != NULL || (tokPos = strstr(s, "#hp")) != NULL) {
+  	sprintf(s2, "%s", s);
+  	pos = tokPos - s;
+  	s[pos] = '\0';
+  	sprintf(s, "%s%i%s", s, health, s2 + pos + 3);
+  }
+
+  cmd = s;
+
+  while ((tokPos = strstr(s, "$team")) != NULL || (tokPos = strstr(s, "#team")) != NULL) {
+  	sprintf(s2, "%s", s);
+  	pos = tokPos - s;
+  	s[pos] = '\0';
+  	sprintf(s, "%s%s%s", s, teamname, s2 + pos + 5);
+  }
+
+  cmd = s;
 
   // if we would be losing an old command that hasn't been acknowledged,
   // we must drop the connection
@@ -2956,7 +3000,6 @@ void CL_Init( void ) {
 
 	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
-	cl_hpSub = Cvar_Get( "cl_hpSub", "0", CVAR_ARCHIVE );
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation

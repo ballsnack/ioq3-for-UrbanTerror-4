@@ -39,6 +39,10 @@
 + `maplist` - output list of maps on the server
 + `findcvar [string]` - finds all cvars with with the specified string in their names
 
+### Chat Variables ###
++ `$hp` or `#hp` - chat your current health
++ `$team` or `#team` - chat your current team
+
 ### Other ###
 + Updated the recording message to look nicer
 + Changed the ugly console to a prettier one
