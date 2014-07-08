@@ -35,7 +35,6 @@
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
-+ `sysexec` - execute a command via command line from in-game
 + `maplist` - output list of maps on the server
 + `findcvar [string]` - finds all cvars with with the specified string in their names
 

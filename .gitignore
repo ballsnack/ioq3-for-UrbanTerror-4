@@ -1,7 +1,14 @@
 code/tools/*
 build/*
+binaries/*
 .cproject
 .project
 .settings/org.eclipse.cdt.codan.core.prefs
 .settings/org.eclipse.cdt.managedbuilder.core.prefs
-binaries/*
+COPYING.txt
+ChangeLog
+Makefile_bak_20131213
+README
+id-readme.txt
+ioUrbanTerror_README.txt
+md4-readme.txt
