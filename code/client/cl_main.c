@@ -174,6 +174,8 @@ void CL_AddReliableCommand( const char *cmd ) {
   	teamname = clc.g_teamnamered;
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
   	teamname = clc.g_teamnameblue;
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
+  	teamname = "";
   } else {
   	teamname = "spectator";
   }
