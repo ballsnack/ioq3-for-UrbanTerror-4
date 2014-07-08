@@ -82,9 +82,8 @@ cvar_t	*cl_altTab;
 cvar_t  *cl_mouseAccelOffset;
 cvar_t  *cl_mouseAccelStyle;
 
-cvar_t 	*cl_randomrgb;
 cvar_t  *cl_teamchatIndicator;
-cvar_t  *cl_randomRGB;
+cvar_t  *cl_randomrgb;
 cvar_t  *clan;
 cvar_t  *cl_clanpos;
 
