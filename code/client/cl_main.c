@@ -182,7 +182,7 @@ void CL_AddReliableCommand( const char *cmd ) {
   		teamname = "SWAT";
   } else if (currentteam == TEAM_FREE) {
   	teamname = "";
-  } else if (currentteam == TEAM_SPEC) {
+  } else if (currentteam == TEAM_SPECTATOR) {
   	teamname = "Spectator";
   }
 
