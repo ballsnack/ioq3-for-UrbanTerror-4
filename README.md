@@ -32,6 +32,7 @@
 + `con_drawscrollbar [0|1]` - draw scrollbar in console
 + `con_fadeIn [0|1]` - use fadeing animation instead of dropping animation for the console
 + `con_margin [0|50]` - add margins to the console to make it a floating box
++ `con_tabs [0|1]` - disable/enable console tabs
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
@@ -46,6 +47,7 @@
 ### Other ###
 + Updated the recording message to look nicer
 + Changed the ugly console to a prettier one
++ Console tabs
 
 ### Credits ###
 + [clearskies](https://github.com/clearskies)
