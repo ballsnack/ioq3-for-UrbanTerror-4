@@ -33,6 +33,8 @@
 + `con_fadeIn [0|1]` - use fadeing animation instead of dropping animation for the console
 + `con_margin [0|50]` - add margins to the console to make it a floating box
 + `con_tabs [0|1]` - disable/enable console tabs
++ `r_drawLegs [0|1]` - shows your legs when you look down
++ `r_noBorder [0|1]` - remove the border in windowed mode
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

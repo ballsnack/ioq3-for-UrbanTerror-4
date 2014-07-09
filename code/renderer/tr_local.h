@@ -1104,6 +1104,9 @@ extern	cvar_t	*r_debugSort;
 extern	cvar_t	*r_printShaders;
 extern	cvar_t	*r_saveFontData;
 
+extern 	cvar_t 	*r_drawLegs;
+extern 	cvar_t 	*r_noBorder;
+
 extern	cvar_t	*r_GLlibCoolDownMsec;
 
 //====================================================================
