@@ -184,9 +184,6 @@ char *replaceToken(char *string, char *key, char *replace) {
     s[tokIndex] = 0;
     sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
   }
-
-  Z_Free(s2);
-
   return s;
 }
 
@@ -215,16 +212,16 @@ void CL_AddReliableCommand( const char *cmd ) {
   if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
   	teamname = clc.g_teamnamered;
   	oteamname = clc.g_teamnameblue;
-  	if (!teamname)
+  	if (!*teamname)
   		teamname = "Red Dragons";
-  	if (!oteamname)
+  	if (!*oteamname)
   		oteamname = "SWAT";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
   	teamname = clc.g_teamnameblue;
   	oteamname = clc.g_teamnamered;
-  	if (!teamname)
+  	if (!*teamname)
   		teamname = "SWAT";
-  	if (!oteamname)
+  	if (!*oteamname)
   		oteamname = "Red Dragons";
   } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
   	teamname = "";
