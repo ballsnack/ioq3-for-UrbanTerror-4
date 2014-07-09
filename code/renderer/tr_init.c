@@ -153,7 +153,7 @@ cvar_t	*r_saveFontData;
 cvar_t	*r_GLlibCoolDownMsec;
 
 cvar_t 	*r_drawLegs;
-cvar_t 	*r_noBorder
+cvar_t 	*r_noBorder;
 
 cvar_t	*r_maxpolys;
 int		max_polys;

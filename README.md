@@ -43,7 +43,8 @@
 
 ### Chat Variables ###
 + `$hp` - chat your current health
-+ `$team` - chat your current team
++ `$team` - chat your current teamname
++ `$oteam` - chat the opposing teamname
 + `$p` - chat your name or the name of the player you are following
 
 ### Other ###

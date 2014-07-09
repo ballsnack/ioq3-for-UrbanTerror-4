@@ -151,6 +151,45 @@ CLIENT RELIABLE COMMAND COMMUNICATION
 =======================================================================
 */
 
+char *replaceToken(char *string, char *key, char *replace) {
+  int numToks = 0;
+  char *s, *pos, *s2;
+  int tokLen = strlen(key) + 1;
+
+  char *tokenDollar = Z_Malloc(tokLen + 1);
+  sprintf(tokenDollar, "$%s", key);
+  char *tokenPound = Z_Malloc(tokLen + 1);
+  sprintf(tokenPound, "#%s", key);
+
+  int tokIndex;
+
+  s = string;
+  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
+    s += strlen(key);
+    numToks++;
+  }
+
+  if (!numToks) {
+    return string;
+  }
+
+  s = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
+  s2 = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
+
+  sprintf(s, "%s", string);
+
+  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
+    sprintf(s2, "%s", s);
+    tokIndex = pos - s;
+    s[tokIndex] = 0;
+    sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
+  }
+
+  Z_Free(s2);
+
+  return s;
+}
+
 /*
 ======================
 CL_AddReliableCommand
@@ -160,82 +199,43 @@ not have future usercmd_t executed before it is executed
 ======================
 */
 void CL_AddReliableCommand( const char *cmd ) {
-  int   index, pos;
-  int 	numToks = 0;
-  int 	health;
-  char 	healthLen[4];
-  char 	*s, *s2, *tokPos, *teamname, *pname, *serverInfo;
-  char 	teamLen[33];
-  char 	currentteam = cl.snap.ps.persistant[PERS_TEAM];
+	int index;
+  	char *s;
+  	char health[4];
+  	char *teamname;
+  	char *oteamname;
+  	char *pname;
 
-  health = cl.snap.ps.stats[0];
+  s = Z_Malloc(strlen(cmd) + 1);
+  Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
 
+  Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
   pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
 
-  if (currentteam == TEAM_RED) {
+  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
   	teamname = clc.g_teamnamered;
+  	oteamname = clc.g_teamnameblue;
   	if (!teamname)
   		teamname = "Red Dragons";
-  } else if (currentteam == TEAM_BLUE) {
+  	if (!oteamname)
+  		oteamname = "SWAT";
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
   	teamname = clc.g_teamnameblue;
+  	oteamname = clc.g_teamnamered;
   	if (!teamname)
   		teamname = "SWAT";
-  } else if (currentteam == TEAM_FREE) {
+  	if (!oteamname)
+  		oteamname = "Red Dragons";
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
   	teamname = "";
-  } else if (currentteam == TEAM_SPECTATOR) {
+  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
   	teamname = "Spectator";
   }
 
-  s = cmd;
-  while ((s = strstr(s, "$hp"))) {
-  	s += 3;
-  	numToks++;
-  }
-
-  s = cmd;
-  while ((s = strstr(s, "$team"))) {
-  	s += 5;
-  	numToks++;
-  }
-
-  s = cmd;
-  while ((s = strstr(s, "$p"))) {
-  	s += 5;
-  	numToks++;
-  }
-
-  s = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
-  s2 = (char *)malloc(strlen(cmd) + strlen(healthLen) * numToks + 1);
-  strncpy(s, cmd, strlen(cmd) + 1);
-
-  s = (char *)malloc(strlen(cmd) + strlen(teamLen) * numToks + 1);
-  s2 = (char *)malloc(strlen(cmd) + strlen(teamLen) * numToks + 1);
-  strncpy(s, cmd, strlen(cmd) + 1);
-
-  while ((tokPos = strstr(s, "$hp")) != NULL) {
-  	sprintf(s2, "%s", s);
-  	pos = tokPos - s;
-  	s[pos] = '\0';
-  	sprintf(s, "%s%i%s", s, health, s2 + pos + 3);
-  }
-
-  cmd = s;
-
-  while ((tokPos = strstr(s, "$team")) != NULL) {
-  	sprintf(s2, "%s", s);
-  	pos = tokPos - s;
-  	s[pos] = '\0';
-  	sprintf(s, "%s%s%s", s, teamname, s2 + pos + 5);
-  }
-
-  cmd = s;
-
-  while ((tokPos = strstr(s, "$p")) != NULL) {
-  	sprintf(s2, "%s", s);
-  	pos = tokPos - s;
-  	s[pos] = '\0';
-  	sprintf(s, "%s%s%s", s, pname, s2 + pos + 2);
-  }
+  s = replaceToken(s, "hp", health);
+  s = replaceToken(s, "p", pname);
+  s = replaceToken(s, "team", teamname);
+  s = replaceToken(s, "oteam", oteamname);
 
   cmd = s;
 
