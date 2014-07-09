@@ -193,31 +193,13 @@ void CL_AddReliableCommand( const char *cmd ) {
   }
 
   s = cmd;
-  while ((s = strstr(s, "#hp"))) {
-  	s += 3;
-  	numToks++;
-  }
-
-  s = cmd;
   while ((s = strstr(s, "$team"))) {
   	s += 5;
   	numToks++;
   }
 
   s = cmd;
-  while ((s, strstr(s, "#team"))) {
-  	s += 5;
-  	numToks++;
-  }
-
-  s = cmd;
   while ((s = strstr(s, "$p"))) {
-  	s += 5;
-  	numToks++;
-  }
-
-  s = cmd;
-  while ((s, strstr(s, "#p"))) {
   	s += 5;
   	numToks++;
   }
@@ -230,7 +212,7 @@ void CL_AddReliableCommand( const char *cmd ) {
   s2 = (char *)malloc(strlen(cmd) + strlen(teamLen) * numToks + 1);
   strncpy(s, cmd, strlen(cmd) + 1);
 
-  while ((tokPos = strstr(s, "$hp")) != NULL || (tokPos = strstr(s, "#hp")) != NULL) {
+  while ((tokPos = strstr(s, "$hp")) != NULL) {
   	sprintf(s2, "%s", s);
   	pos = tokPos - s;
   	s[pos] = '\0';
@@ -239,7 +221,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 
   cmd = s;
 
-  while ((tokPos = strstr(s, "$team")) != NULL || (tokPos = strstr(s, "#team")) != NULL) {
+  while ((tokPos = strstr(s, "$team")) != NULL) {
   	sprintf(s2, "%s", s);
   	pos = tokPos - s;
   	s[pos] = '\0';
@@ -248,7 +230,7 @@ void CL_AddReliableCommand( const char *cmd ) {
 
   cmd = s;
 
-  while ((tokPos = strstr(s, "$p")) != NULL || (tokPos = strstr(s, "#p")) != NULL) {
+  while ((tokPos = strstr(s, "$p")) != NULL) {
   	sprintf(s2, "%s", s);
   	pos = tokPos - s;
   	s[pos] = '\0';

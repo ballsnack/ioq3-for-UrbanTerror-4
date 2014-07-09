@@ -42,9 +42,9 @@
 + `findcvar [string]` - finds all cvars with with the specified string in their names
 
 ### Chat Variables ###
-+ `$hp` or `#hp` - chat your current health
-+ `$team` or `#team` - chat your current team
-+ `$p` or `#p` - chat your name or the name of the player you are following
++ `$hp` - chat your current health
++ `$team` - chat your current team
++ `$p` - chat your name or the name of the player you are following
 
 ### Other ###
 + Updated the recording message to look nicer
