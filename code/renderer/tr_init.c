@@ -152,6 +152,9 @@ cvar_t	*r_saveFontData;
 
 cvar_t	*r_GLlibCoolDownMsec;
 
+cvar_t 	*r_drawLegs;
+cvar_t 	*r_noBorder
+
 cvar_t	*r_maxpolys;
 int		max_polys;
 cvar_t	*r_maxpolyverts;
@@ -1055,6 +1058,9 @@ void R_Register( void )
 	r_maxpolyverts = ri.Cvar_Get( "r_maxpolyverts", va("%d", MAX_POLYVERTS), 0);
 
 	r_GLlibCoolDownMsec = ri.Cvar_Get( "r_GLlibCoolDownMsec", "0", CVAR_ARCHIVE );
+
+	r_drawLegs = ri.Cvar_Get("r_drawLegs", "0", CVAR_ARCHIVE);
+	r_noBorder = ri.Cvar_Get("r_noBorder", "0", CVAR_ARCHIVE);
   
 	// make sure all the commands added here are also
 	// removed in R_Shutdown
