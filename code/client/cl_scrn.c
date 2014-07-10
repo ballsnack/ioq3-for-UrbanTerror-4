@@ -499,16 +499,12 @@ SCR_DrawKills
 =================
 */
 void SCR_DrawKills( void ) {
-	
-	if (!Cvar_VariableValue("cg_draw2D")) {
-		return;
-	}
-
-	if (!Cvar_VariableValue("cl_paused")) {
-		return;
-	}
-
-	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
+	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
+		cl.snap.ps.pm_type > 4 ||
+		cl_paused->value ||
+		!cl_drawKills->integer ||
+		cl.snap.ps.clientNum != clc.clientNum ||
+		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
 	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
