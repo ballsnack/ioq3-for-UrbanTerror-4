@@ -374,7 +374,6 @@ void SCR_DrawDemoRecording( void ) {
 	}
 
 	pos = FS_FTell( clc.demofile );
-	//sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 	sprintf( string, ": %.10s... %iKB", clc.demoName, pos / 1024 );
 
 	SCR_DrawStringExt( 320 - strlen( string ) * 5.15 , 1, 8, "REC", g_color_table[1], qtrue );
@@ -388,14 +387,12 @@ SCR_DrawClock
 =================
 */
 void SCR_DrawClock( void ) {
-    int         color, fontsize, posx, posy;
-    qtime_t myTime;
+    int         color = cl_drawclockcolor->integer;
+    int 		fontsize = cl_drawclockfontsize->integer;
+    int 		posx = cl_drawclockposx->integer;
+    int 		posy = cl_drawclockposy->integer;
     char        string[16];
-
-    color = cl_drawclockcolor->integer;
-    fontsize = cl_drawclockfontsize->integer;
-    posx = cl_drawclockposx->integer;
-    posy = cl_drawclockposy->integer;
+    qtime_t 	myTime;
 
     if ( color > 20 ) color = 20;
     if ( color < 1 ) color = 1;
@@ -423,38 +420,43 @@ void SCR_DrawClock( void ) {
 SCR_DrawHealth
 =================
 */
-void SCR_DrawHealth( void ) {
-	char healthStr[6];
-	int health, healthCol, posx, posy;
-	vec4_t boxCol;
-
-	posx = cl_drawhealthposx->integer;
-	posy = cl_drawhealthposy->integer;
-	health = cl.snap.ps.stats[0];
-
-	if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
-		return;
-
-	boxCol[0] = boxCol[1] = boxCol[2] = 0.0;
-	boxCol[3] = 0.85;
-	if (cl_drawhealth->value) {
-		Com_sprintf(healthStr, 6, "%3d%%", health);
-		SCR_FillRect(posx, posy - 3, 32.0, 16.0, boxCol);
-		if (health >= 80) {
-			healthCol = 2;
-		} else if (health <= 79 && health >= 44) {
-			healthCol = 3;
+void SCR_DrawHealth(void) {
+    
+    int health;
+    int posx = cl_drawhealthposx->integer;
+    int posy = cl_drawhealthposy->integer;
+    char healthStr[32];
+    char *healthCol = S_COLOR_WHITE;
+    
+    if (!Cvar_VariableValue("cl_drawHealth")) {
+        return;
+    }
+    
+    if (!Cvar_VariableValue("cg_draw2D")) {
+        return;
+    }
+    
+    if (Cvar_VariableValue("cl_paused")) {
+        return;
+    }
+    
+    health = cl.snap.ps.stats[0];
+    if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4) {
+        return;
+    }
+    
+    if (health >= 60) {
+			healthCol = S_COLOR_GREEN;
+		} else if (health >= 35) {
+			healthCol = S_COLOR_YELLOW;
+		} else if (health >= 15) {
+			healthCol = S_COLOR_ORANGE;
 		} else {
-			healthCol = 1;
+			healthCol = S_COLOR_RED;
 		}
-		if (health == 100) {
-		SCR_DrawStringExtNoShadow((posx + 15) - strlen(healthStr) * 4, posy, 8, healthStr, g_color_table[healthCol], qtrue );
-		} else if (health <= 99 && health >= 10){
-		SCR_DrawStringExtNoShadow((posx) - strlen(healthStr), posy, 8, healthStr, g_color_table[healthCol], qtrue );
-		} else if (health < 10) {
-		SCR_DrawStringExtNoShadow((posx - 5) - strlen(healthStr), posy, 8, healthStr, g_color_table[healthCol], qtrue );
-		}
-	}
+ 
+    Com_sprintf(healthStr, sizeof(healthStr), "H:%s%d%%", healthCol, health);
+    SCR_DrawStringExt(posx, posy, SMALLCHAR_WIDTH, healthStr, g_color_table[7], qfalse);
 }
 
 /*
@@ -497,10 +499,16 @@ SCR_DrawKills
 =================
 */
 void SCR_DrawKills( void ) {
-	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
-		cl.snap.ps.pm_type > 4 ||
-		cl_paused->value ||
-		!cl_drawKills->value)
+	
+	if (!Cvar_VariableValue("cg_draw2D")) {
+		return;
+	}
+
+	if (!Cvar_VariableValue("cl_paused")) {
+		return;
+	}
+
+	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4)
 		return;
 
 	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
