@@ -1038,10 +1038,10 @@ void Con_DrawSolidConsole( float frac ) {
 
 		for (i = 0; i < numConsoles; i++) {
 			tabWidth = strlen(consoleNames[i]) * 7 + 10;
-			tabHeight = 19;
+			tabHeight = 18;
 			if (currentCon == &consoles[i]) {
-				tabWidth += 10;
-				tabHeight = 24;
+				tabWidth += 7;
+				tabHeight = 23;
 				lineColour[3] = 1;
 			} else {
 				lineColour[3] = 0.3;
@@ -1076,9 +1076,9 @@ void Con_DrawSolidConsole( float frac ) {
 
 
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 5, 7, consoleNames[i], g_color_table[7], qtrue);
+				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 7, consoleNames[i], g_color_table[7], qtrue);
 			} else {
-				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 5, 7, consoleNames[i], darkTextColour, qtrue);
+				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 6, 7, consoleNames[i], darkTextColour, qtrue);
 			}
 
 			horizOffset += tabWidth;
