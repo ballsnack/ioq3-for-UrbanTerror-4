@@ -59,6 +59,7 @@ cvar_t 		*con_height;
 cvar_t 		*con_fadeIn;
 cvar_t 		*con_margin;
 cvar_t		*con_tabs;
+cvar_t		*con_borderRGB;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -393,6 +394,7 @@ void Con_Init (void) {
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
+	con_borderRGB = Cvar_Get("con_borderRGB", "0 100 100", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -984,6 +986,7 @@ void Con_DrawSolidConsole( float frac ) {
 	int				currentColor;
 	vec4_t			lineColour, bgColour;
 	vec4_t			darkTextColour;
+	int r, g, b;
 
 	lines = cls.glconfig.vidHeight * frac;
 	if (lines <= 0)
@@ -1007,9 +1010,18 @@ void Con_DrawSolidConsole( float frac ) {
 		SCR_AdjustedFillRect(margin, margin, adjustedScreenWidth, y, bgColour);
 	}
 
-	lineColour[0] = 0;
-	lineColour[1] = 100.0/255.0;
-	lineColour[2] = 100.0/255.0;
+	if (sscanf(con_borderRGB->string, "%i %i %i", &r, &g, &b) == 3 &&
+		r >=0 && r <= 255 &&
+		g >=0 && g <= 255 &&
+		b >=0 && b <= 255) {
+		lineColour[0] = r/255.0;
+		lineColour[1] = g/255.0;
+		lineColour[2] = b/255.0;
+	} else {
+		lineColour[0] = 0;
+		lineColour[1] = 100.0/255.0;
+		lineColour[2] = 100.0/255.0;
+	}
 	lineColour[3] = 1;
 
 	darkTextColour[0] = darkTextColour[1] = darkTextColour[2] = 0.25;

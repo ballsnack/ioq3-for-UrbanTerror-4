@@ -34,6 +34,7 @@
 + `con_tabs [0|1]` - disable/enable console tabs
 + `r_drawLegs [0|1]` - shows your legs when you look down
 + `r_noBorder [0|1]` - remove the border in windowed mode
++ `con_borderRGB [r,g,b]` - change the rgb of the console border
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
