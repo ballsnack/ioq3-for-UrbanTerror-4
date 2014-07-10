@@ -33,7 +33,7 @@ console_t	*currentCon = &consoles[0];
 char *consoleNames[] = {
 	"All",
 	"General",
-	"Kills/Hits",
+	"Kills",
 	"Chat",
 };
 int numConsoles = 4;
@@ -1037,11 +1037,11 @@ void Con_DrawSolidConsole( float frac ) {
 		float old;
 
 		for (i = 0; i < numConsoles; i++) {
-			tabWidth = strlen(consoleNames[i]) * 8 + 10;
-			tabHeight = 20;
+			tabWidth = strlen(consoleNames[i]) * 7 + 10;
+			tabHeight = 19;
 			if (currentCon == &consoles[i]) {
 				tabWidth += 10;
-				tabHeight = 25;
+				tabHeight = 24;
 				lineColour[3] = 1;
 			} else {
 				lineColour[3] = 0.3;
@@ -1076,9 +1076,9 @@ void Con_DrawSolidConsole( float frac ) {
 
 
 			if (currentCon == &consoles[i]) {
-				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 8, 8, consoleNames[i], g_color_table[7], qtrue);
+				SCR_AdjustedDrawString(horizOffset + 10, vertOffset + 5, 7, consoleNames[i], g_color_table[7], qtrue);
 			} else {
-				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 6, 8, consoleNames[i], darkTextColour, qtrue);
+				SCR_AdjustedDrawString(horizOffset + 5, vertOffset + 5, 7, consoleNames[i], darkTextColour, qtrue);
 			}
 
 			horizOffset += tabWidth;
