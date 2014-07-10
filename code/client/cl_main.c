@@ -1422,17 +1422,11 @@ void CL_Connect_f( void ) {
 		cls.state = CA_CONNECTING;
 	}
 
-<<<<<<< HEAD
-	cls.keyCatchers = 0;
-	clc.connectTime = -99999;	// CL_CheckForResend() will fire immediately
-	clc.connectPacketCount = 0;
-=======
   Cvar_Set("cl_lastServerAddress", serverString);
 
   cls.keyCatchers = 0;
   clc.connectTime = -99999; // CL_CheckForResend() will fire immediately
   clc.connectPacketCount = 0;
->>>>>>> 56f8813... Made the reconnect command work across a client restart
 
 	// server connection string
 	Cvar_Set( "cl_currentServerAddress", server );
