@@ -45,6 +45,9 @@ qboolean killNext = qfalse;
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
 
+int lastServerCmdNum = -1;
+qboolean ignoreNewline = qtrue;
+
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
 cvar_t 		*cl_chatcolor;
@@ -574,6 +577,13 @@ void CL_ConsolePrint( char *txt ) {
 	hitNext = qfalse;
 	killNext = qfalse;
 
+	if (ignoreNewline && !strcmp(txt, "\n")) {
+		ignoreNewline = qfalse;
+		return;
+	}
+
+	ignoreNewline = qfalse;
+
 	// TTimo - prefix for text that shows up in console but not in notify
 	// backported from RTCW
 	if ( !Q_strncmp( txt, "[skipnotify]", 12 ) ) {
@@ -615,6 +625,29 @@ void CL_ConsolePrint( char *txt ) {
 		char *playerhad;
 		int found = 0;
 		int killLogNum = Cvar_VariableIntegerValue("cg_drawKillLog");
+		char *cmd;
+		cmd = clc.serverCommands[clc.lastExecutedServerCommand & (MAX_RELIABLE_COMMANDS-1)];
+		if (clc.lastExecutedServerCommand != lastServerCmdNum) {
+			if (strstr(cmd, "rsay") == cmd ||
+				strstr(cmd, "tcchat") == cmd) {
+				isChat = qtrue;
+				chatNext = qtrue;
+			}
+			if (!Cvar_VariableIntegerValue("cg_teamchatsonly")) {
+				if (strstr(cmd, "cchat") == cmd ||
+					strstr(cmd, "chat") == cmd) {
+					isChat = qtrue;
+					chatNext = qtrue;
+				}
+			}
+		}
+		
+		lastServerCmdNum = clc.lastExecutedServerCommand;
+
+		if (txt[strlen(txt) - 1] == '\n') {
+			ignoreNewline = qtrue;
+		}
+		
 		if (killLogNum == 1) {
 			search = killLog1;
 		} else if (killLogNum == 2) {
@@ -789,10 +822,10 @@ void CL_ConsolePrint( char *txt ) {
 
 	writeTextToConsole(&consoles[0], txt, skipnotify);
 
-	if (isChat) {
-		writeTextToConsole(&consoles[3], txt, skipnotify);
-	} else if (isHit || isKill) {
+	if (isHit || isKill) {
 		writeTextToConsole(&consoles[2], txt, skipnotify);
+	} else if (isChat) {
+		writeTextToConsole(&consoles[3], txt, skipnotify);
 	} else {
 		writeTextToConsole(&consoles[1], txt, skipnotify);
 	}
