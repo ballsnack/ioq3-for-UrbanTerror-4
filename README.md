@@ -35,6 +35,7 @@
 + `r_drawLegs [0|1]` - shows your legs when you look down
 + `r_noBorder [0|1]` - remove the border in windowed mode
 + `con_borderRGB [r,g,b]` - change the rgb of the console border
++ `cl_autokevdrop [0|100]` - drop your kevlar when you reach a certain health percent
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

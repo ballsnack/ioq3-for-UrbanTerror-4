@@ -87,8 +87,7 @@ cvar_t  *cl_randomrgb;
 cvar_t  *clan;
 cvar_t  *cl_clanpos;
 
-cvar_t  *cl_weapAutoSwitch;
-cvar_t  *cl_weapAutoReload;
+cvar_t 	*cl_autokevdrop;
 
 cvar_t  *cl_lastServerAddress;
 
@@ -2644,6 +2643,16 @@ void CL_Frame ( int msec ) {
 
 	if (cl_randomrgb->integer == 3) {
 		CL_RandomRGB();
+
+	if (cl_autokevdrop->integer > 0 && cl_autokevdrop < 100) {
+		int threshold = cl_autokevdrop->integer;
+		if (cl.lastHealth) {
+			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
+				Cbuf_AddText("ut_itemdrop Kevlar\n");
+				}
+			}
+		}
+		cl.lastHealth = cl.snap.ps.stats[0];
 	}
 }
 
@@ -3015,6 +3024,7 @@ void CL_Init( void ) {
 
 	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
+	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation
