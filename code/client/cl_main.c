@@ -2641,18 +2641,16 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
+	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
+      int threshold = cl_autokevdrop->integer;
+      if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
+        Cbuf_AddText("ut_itemdrop kevlar\n");
+      		}
+    	}
+    cl.lastHealth = cl.snap.ps.stats[0];
+
 	if (cl_randomrgb->integer == 3) {
 		CL_RandomRGB();
-
-	if (cl_autokevdrop->integer > 0 && cl_autokevdrop < 100) {
-		int threshold = cl_autokevdrop->integer;
-		if (cl.lastHealth) {
-			if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
-				Cbuf_AddText("ut_itemdrop Kevlar\n");
-				}
-			}
-		}
-		cl.lastHealth = cl.snap.ps.stats[0];
 	}
 }
 
