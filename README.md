@@ -19,7 +19,7 @@ _<b>HUD</b>_
 + `cl_drawhealth [0|1]` - show current health on the HUD
 + `cl_drawkaills [0|1]` - show current kills on the HUD
 + `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
-+ `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
++ `cl_teamchatindicator [string]` - show a (TEAM) before client name if chat is teamchat
 
 _<b>Sound</b>_
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps

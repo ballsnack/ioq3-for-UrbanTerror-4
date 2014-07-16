@@ -2639,7 +2639,7 @@ void CL_Frame ( int msec ) {
     cl.lastHealth = cl.snap.ps.stats[0];
 
 	if (cl_randomrgb->integer == 3) {
-		CL_RandomRGB();
+		CL_RandomRGB_f();
 	}
 }
 
@@ -2740,7 +2740,7 @@ void CL_StartHunkUsers( void ) {
 	}
 
 	if (cl_randomrgb->integer == 2) {
-		CL_RandomRGB();
+		CL_RandomRGB_f();
 	}
 }
 
@@ -3012,7 +3012,7 @@ void CL_Init( void ) {
 	cl_freelook = Cvar_Get( "cl_freelook", "1", CVAR_ARCHIVE );
 
 	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
-	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
+	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
 	cl_autokevdroponflag = Cvar_Get("cl_autokevdroponflag", "0", CVAR_ARCHIVE);
 
@@ -3122,7 +3122,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("model", CL_SetModel_f );
 	Cmd_AddCommand ("video", CL_Video_f );
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
-	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
+	Cmd_AddCommand ("randomrgb", CL_RandomRGB_f);
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	CL_InitRef();
 
@@ -3131,7 +3131,7 @@ void CL_Init( void ) {
 	Cbuf_Execute ();
 
 	if (cl_randomrgb->integer == 1 ){
-		CL_RandomRGB();
+		CL_RandomRGB_f();
 	}
 
 	Cvar_Set( "cl_running", "1" );
@@ -4070,7 +4070,7 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 CL_RandomRGB_f
 ====================
 */
-void CL_RandomRGB(void) {
+void CL_RandomRGB_f(void) {
   char s[12];
   int r, g, b;
 
