@@ -64,6 +64,8 @@ cvar_t 		*con_margin;
 cvar_t		*con_tabs;
 cvar_t		*con_borderRGB;
 
+cvar_t 		*cl_noKevOnFlag;
+
 #define	DEFAULT_CONSOLE_WIDTH	78
 
 vec4_t	console_color = {1.0, 1.0, 1.0, 1.0};
@@ -398,6 +400,8 @@ void Con_Init (void) {
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
 	con_borderRGB = Cvar_Get("con_borderRGB", "0 100 100", CVAR_ARCHIVE);
+
+	cl_noKevOnFlag = Cvar_Get("cl_noKevOnFlag", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;

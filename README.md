@@ -34,6 +34,7 @@
 + `r_noBorder [0|1]` - remove the border in windowed mode
 + `con_borderRGB [r,g,b]` - change the rgb of the console border
 + `cl_autokevdrop [0|100]` - drop your kevlar when you reach a certain health percent
++ `cl_dropkevonflag [0|1]` - auto drop your kevlar when you pick up a flag
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

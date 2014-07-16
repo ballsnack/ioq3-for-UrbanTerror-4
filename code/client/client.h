@@ -387,6 +387,8 @@ extern	cvar_t	*cl_autoRecordDemo;
 
 extern	cvar_t	*cl_altTab;
 
+extern 	cvar_t 	*cl_dropkevonflag;
+
 #ifdef USE_AUTH
 extern  cvar_t	*cl_auth_engine;
 extern  cvar_t  *cl_auth;

@@ -88,6 +88,7 @@ cvar_t  *clan;
 cvar_t  *cl_clanpos;
 
 cvar_t 	*cl_autokevdrop;
+cvar_t	*cl_dropkevonflag;
 
 cvar_t  *cl_lastServerAddress;
 
@@ -211,7 +212,7 @@ void CL_AddReliableCommand( const char *cmd ) {
   Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
 
   Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n");
 
   if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
   	teamname = clc.g_teamnamered;
@@ -3023,6 +3024,7 @@ void CL_Init( void ) {
 	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
 	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
+	cl_dropkevonflag = Cvar_Get("cl_dropkevonflag", "0", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation
