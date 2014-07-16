@@ -253,6 +253,41 @@ void CL_ConfigstringModified( void ) {
 
 }
 
+int skinToChatColour(int team, int skin) {
+	if (skin < 0 || skin > 14)
+		skin = 0;
+
+	int colour = skin;
+	if (!skin) {
+		if (team == TEAM_RED) {
+			colour = 1;
+		} else if (team == TEAM_BLUE) {
+			colour = 4;
+		}
+	}
+
+	int skinColours[] = {
+		colour, // Default
+		2, // Griffins
+		1, // Red Dragons
+		4, // SWAT
+		6, // Purple Haze
+		8, // Fugitives
+		1, // Oilers -> dark green
+		7, // Ice Dragons
+		0, // Black Ice
+		3, // Desert
+		7, // Cowboy
+		4, // Cavalry
+		7, // Droogs
+		6, // DrPink
+		5 // DrBlue
+	};
+
+
+	return skinColours[skin];
+}
+
 
 /*
 ===================
@@ -375,20 +410,14 @@ rescan:
 	}
 
 	if (cl_teamchatIndicator->value) {
-		if (!strcmp(cmd, "tcchat") && strstr(Cmd_Argv(2), "^2(TEAM) ") != Cmd_Argv(2)) {
+		if (!strcmp(cmd, "tcchat")) {
 			int newStrlen = strlen(s) + 12;
 			char *s2 = (char *)malloc(newStrlen);
-			int tColour;
-			if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-				tColour = 1;
-			} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-				tColour = 4;
-			} else {
-				tColour = 7;
-			}
-			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(TEAM) ^%i%s\"", Cmd_Argv(1), tColour, Cmd_Argv(2));
-			s = s2;
-			goto rescan;
+			int team = atoi(Cmd_Argv(1));
+			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+
+			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"^2(T)^%i%s\"", Cmd_Argv(1), colour, Cmd_Argv(2));
+			Cmd_TokenizeString(s2);
 		}
 	}
 
