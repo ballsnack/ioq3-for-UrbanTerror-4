@@ -8,8 +8,6 @@
 + `cl_drawclockposx [0|--]` - change the x-axis of the clock
 + `cl_drawclockposy [0|--]` - change the y-axis of the clock
 + `cl_drawhealth [0|1]` - show current health on the HUD
-+ `cl_drawhealthposx [0|608]` - change the x-axis of the health box
-+ `cl_drawhealthposy [0|608]` - change the y-axis of the health box
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps
 + `s_radio [0|1]` - disable/enable radio calls
 + `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"

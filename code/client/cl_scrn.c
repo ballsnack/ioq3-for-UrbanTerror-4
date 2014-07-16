@@ -38,8 +38,6 @@ cvar_t      *cl_drawclockposx;
 cvar_t      *cl_drawclockposy;
 cvar_t 		*cl_crosshairhealthcolor;
 cvar_t 		*cl_drawhealth;
-cvar_t 		*cl_drawhealthposx;
-cvar_t 		*cl_drawhealthposy;
 cvar_t		*cl_drawKills;
 
 /*
@@ -423,10 +421,6 @@ SCR_DrawHealth
 void SCR_DrawHealth(void) {
     
     int health;
-    int posx = cl_drawhealthposx->integer;
-    int posy = cl_drawhealthposy->integer;
-    char healthStr[32];
-    char *healthCol = S_COLOR_WHITE;
     
     if (!Cvar_VariableValue("cl_drawHealth")) {
         return;
@@ -445,18 +439,29 @@ void SCR_DrawHealth(void) {
         return;
     }
     
-    if (health >= 60) {
-			healthCol = S_COLOR_GREEN;
-		} else if (health >= 35) {
-			healthCol = S_COLOR_YELLOW;
-		} else if (health >= 15) {
-			healthCol = S_COLOR_ORANGE;
-		} else {
-			healthCol = S_COLOR_RED;
-		}
- 
-    Com_sprintf(healthStr, sizeof(healthStr), "H:%s%d%%", healthCol, health);
-    SCR_DrawStringExt(posx, posy, SMALLCHAR_WIDTH, healthStr, g_color_table[7], qfalse);
+    char healthStr[12];
+	int healthCol;
+	float xx = 54.0f;
+	float yy = 449.0f;
+
+	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
+		yy = 439.0f;
+	}
+
+	
+	if (health >= 60) {
+		healthCol = 2;
+	} else if (health >= 35) {
+		healthCol = 3;
+	} else if (health >= 15) {
+		healthCol = 8;
+	} else {
+		healthCol = 1;
+	}
+
+	Com_sprintf(healthStr, 12, "H:^%i%3d%%", healthCol, health);
+
+	SCR_DrawStringExt(xx, yy, 8, healthStr, g_color_table[7], qfalse);
 }
 
 /*
@@ -612,8 +617,6 @@ void SCR_Init( void ) {
     cl_drawclockposy = Cvar_Get ("cl_drawclockposy", "42", CVAR_ARCHIVE);
 	cl_crosshairhealthcolor = Cvar_Get ("cl_crosshairhealthcolor", "0", CVAR_ARCHIVE);
     cl_drawhealth = Cvar_Get ("cl_drawHealth", "1", CVAR_ARCHIVE);
-    cl_drawhealthposy = Cvar_Get("cl_drawhealthposy", "417", CVAR_ARCHIVE);
-    cl_drawhealthposx = Cvar_Get("cl_drawhealthposx", "3", CVAR_ARCHIVE);
 	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
