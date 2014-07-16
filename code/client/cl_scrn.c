@@ -418,37 +418,27 @@ void SCR_DrawClock( void ) {
 SCR_DrawHealth
 =================
 */
-void SCR_DrawHealth(void) {
-    
-    int health;
-    
-    if (!Cvar_VariableValue("cl_drawHealth")) {
-        return;
-    }
-    
-    if (!Cvar_VariableValue("cg_draw2D")) {
-        return;
-    }
-    
-    if (Cvar_VariableValue("cl_paused")) {
-        return;
-    }
-    
-    health = cl.snap.ps.stats[0];
-    if (!health || cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR || cl.snap.ps.pm_type > 4) {
-        return;
-    }
-    
-    char healthStr[12];
+void SCR_DrawHealth( void ) {
+	int health = cl.snap.ps.stats[0];
+
+	if (!health ||
+		cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
+		cl.snap.ps.pm_type > 4 ||
+		cl_paused->value ||
+		!cl_drawhealth->integer ||
+		!Cvar_VariableIntegerValue("cg_draw2d"))
+		return;
+
+	char healthStr[12];
 	int healthCol;
-	float xx = 54.0f;
-	float yy = 449.0f;
+	int x = 54;
+	int y = 449;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		yy = 439.0f;
+		y = 439;
 	}
 
-	
+
 	if (health >= 60) {
 		healthCol = 2;
 	} else if (health >= 35) {
@@ -459,9 +449,10 @@ void SCR_DrawHealth(void) {
 		healthCol = 1;
 	}
 
-	Com_sprintf(healthStr, 12, "H:^%i%3d%%", healthCol, health);
+	Com_sprintf(healthStr, 12, "H:^%i%i%%", healthCol, health);
 
-	SCR_DrawStringExt(xx, yy, 8, healthStr, g_color_table[7], qfalse);
+	SCR_DrawStringExt(x, y, 8, healthStr, g_color_table[7], qfalse);
+
 }
 
 /*
