@@ -88,7 +88,7 @@ cvar_t  *clan;
 cvar_t  *cl_clanpos;
 
 cvar_t 	*cl_autokevdrop;
-cvar_t	*cl_dropkevonflag;
+cvar_t	*cl_autokevdroponflag;
 
 cvar_t  *cl_lastServerAddress;
 
@@ -3024,7 +3024,7 @@ void CL_Init( void ) {
 	cl_randomrgb = Cvar_Get("cl_randomrgb", "0", CVAR_ARCHIVE);
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "0", CVAR_ARCHIVE );
 	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
-	cl_dropkevonflag = Cvar_Get("cl_dropkevonflag", "0", CVAR_ARCHIVE);
+	cl_autokevdroponflag = Cvar_Get("cl_autokevdroponflag", "0", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation

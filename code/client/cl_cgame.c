@@ -366,7 +366,7 @@ rescan:
 		}
 	}
 
-	if (cl_dropkevonflag->integer) {
+	if (cl_autokevdroponflag->integer) {
 		if (!strcmp(cmd, "ccprint")) {
 			if (atoi(Cmd_Argv(1)) == 0 && !strcmp(Cmd_Argv(3), Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n"))) {
 				Cbuf_AddText("ut_itemdrop kevlar\n");

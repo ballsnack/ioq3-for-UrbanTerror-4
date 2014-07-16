@@ -1,6 +1,15 @@
 ## Urban Terror 4.2.0xx Client ##
 
 ### Added CVARs ###
+
+_<b>Automation</b>_
++ `cl_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo
++ `cl_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
++ `cl_autoweapdrop [0|1]` - auto drop your weapon when out of ammo
++ `cl_autokevdrop [1|99]` - drop your kevlar when you reach a certain health percent
++ `cl_autokevdroponflag [0|1]` - auto drop your kevlar when you pick up a flag
+
+_<b>HUD</b>_
 + `cl_crosshairhealthcolor [0|2]` - crosshair will change color depending on your health
 + `cl_drawclock12 [0|1]` - use 12 hour clock
 + `cl_drawclockcolor [1|20]` - change the color of the clock
@@ -8,17 +17,20 @@
 + `cl_drawclockposx [0|--]` - change the x-axis of the clock
 + `cl_drawclockposy [0|--]` - change the y-axis of the clock
 + `cl_drawhealth [0|1]` - show current health on the HUD
++ `cl_drawkaills [0|1]` - show current kills on the HUD
++ `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
++ `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
+
+_<b>Sound</b>_
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps
 + `s_radio [0|1]` - disable/enable radio calls
-+ `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
+
+_<b>Userinfo</b>_
 + `cl_randomrgb [0|3]` - generate random cg_rgb upon startup
-+ `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
-+ `cl_drawKills [0|1]` - show current kills on the HUD
-+ `cl_teamchatindicator [0|1]` - show a (TEAM) before client name if chat is teamchat
-+ `cl_autoweapswitch [0|2]` - disable/enable auto weapon switching when out of ammo
-+ `cl_autoreload [0|1]` - disable/enable auto weapon reload when out of ammo
 + `clan [string]` - add a clantag to your name
 + `cl_clanpos [0|1]` - change the position of the clantag
+
+_<b>Console</b>_
 + `con_coloredKills [0|1]` - disable/enable colored player names in the killfeed in the console
 + `con_coloredHits [0|2]` - disable/enable colored % damage in console
 + `con_prompt [string]` - change the `]` that is shown in the console when typing
@@ -30,12 +42,12 @@
 + `con_fadeIn [0|1]` - use fadeing animation instead of dropping animation for the console
 + `con_margin [0|50]` - add margins to the console to make it a floating box
 + `con_tabs [0|1]` - disable/enable console tabs
++ `con_borderRGB [r,g,b]` - change the rgb of the console border
+
+_<b>Other</b>_
++ `com_nosplash [0|1]` - disable/enable the frozen sand splash screen
 + `r_drawLegs [0|1]` - shows your legs when you look down
 + `r_noBorder [0|1]` - remove the border in windowed mode
-+ `con_borderRGB [r,g,b]` - change the rgb of the console border
-+ `cl_autokevdrop [0|100]` - drop your kevlar when you reach a certain health percent
-+ `cl_dropkevonflag [0|1]` - auto drop your kevlar when you pick up a flag
-+ `cl_autoweapdrop [0|1]` - auto drop your weapon when out of ammo
 
 ### Commands ###
 + `randomrgb` - generate a random RGB
