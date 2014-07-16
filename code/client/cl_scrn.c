@@ -512,13 +512,17 @@ void SCR_DrawKills( void ) {
 		cl.currentKills = 0;
 	}
 
-	char killStr[12];
-	int strWidth;
-	int size = 8;
-	Com_sprintf(killStr, 12, "%ik", cl.currentKills);
-	strWidth = strlen(killStr) * size;
 
-	SCR_DrawStringExtNoShadow(320 - strWidth / 2, 460, size, killStr, g_color_table[2], qtrue );
+	char killStr[12];
+	int x = 56;
+	int y = 437;
+
+	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
+		y = 427;
+	}
+
+	Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
+	SCR_DrawStringExt(x, y, 8, killStr, g_color_table[7], qfalse );
 }
 
 
