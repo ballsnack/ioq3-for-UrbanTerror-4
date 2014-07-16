@@ -93,6 +93,7 @@ cvar_t	*cl_autokevdroponflag;
 cvar_t  *cl_lastServerAddress;
 
 void CL_Maplist_f(void);
+void CL_RandomRGB_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1245,19 +1246,6 @@ void CL_RequestAuthorization( void ) {
 	fs = Cvar_Get ("cl_anonymous", "0", CVAR_INIT|CVAR_SYSTEMINFO );
 
 	NET_OutOfBandPrint(NS_CLIENT, cls.authorizeServer, va("getKeyAuthorize %i %s", fs->integer, nums) );*/
-}
-
-/*
-=================
-CL_RandomRGB_f
-=================
-*/
-
-void CL_RandomRGB (void) {
-	char s[12];
-	srand((unsigned)time(NULL));
-	Com_sprintf(s, 12, "%i %i %i", rand() % 256, rand() % 256, rand() % 256);
-	Cvar_Set("cg_rgb", s);
 }
 
 /*
@@ -2974,6 +2962,8 @@ CL_Init
 void CL_Init( void ) {
 	Com_Printf( "----- Client Initialization -----\n" );
 
+	srand((unsigned)time(NULL));
+
 	Con_Init ();	
 
 	CL_ClearState ();
@@ -4080,10 +4070,9 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 CL_RandomRGB_f
 ====================
 */
-void CL_RandomRGB_f(void) {
+void CL_RandomRGB(void) {
   char s[12];
   int r, g, b;
-  srand((unsigned)time(NULL));
 
   r = rand() % 256;
   g = rand() % 256;
