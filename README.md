@@ -35,6 +35,7 @@
 + `con_borderRGB [r,g,b]` - change the rgb of the console border
 + `cl_autokevdrop [0|100]` - drop your kevlar when you reach a certain health percent
 + `cl_dropkevonflag [0|1]` - auto drop your kevlar when you pick up a flag
++ `cl_autoweapdrop [0|1]` - auto drop your weapon when out of ammo
 
 ### Commands ###
 + `randomrgb` - generate a random RGB

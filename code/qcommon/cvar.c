@@ -408,8 +408,13 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force ) {
 
 	if (!Q_stricmp(var_name, "cl_autoweapswitch") && var->integer) {
 		Cvar_Set("cl_autoreload", "0");
+		Cvar_Set("cl_autoweapdrop", "0");
 	} else if (!Q_stricmp(var_name, "cl_autoreload") && var->integer) {
 		Cvar_Set("cl_autoweapswitch", "0");
+		Cvar_Set("cl_autoweapdrop", "0");
+	} else if (!Q_stricmp(var_name, "cl_autoweapdrop") && var->integer) {
+		Cvar_Set("cl_autoweapswitch", "0");
+		Cvar_Set("cl_autoreload", "0");
 	}
 
 	return var;

@@ -27,16 +27,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 int g_console_field_width = 78;
 
-console_t consoles[4];
+console_t consoles[5];
 int currentConsoleNum = 0;
 console_t	*currentCon = &consoles[0];
 char *consoleNames[] = {
 	"All",
 	"General",
 	"Kills",
+	"Hits",
 	"Chat",
 };
-int numConsoles = 4;
+int numConsoles = 5;
 
 qboolean chatNext = qfalse; // Used to send the \n that follows a chat message to the chat console
 qboolean hitNext = qfalse;
@@ -826,10 +827,12 @@ void CL_ConsolePrint( char *txt ) {
 
 	writeTextToConsole(&consoles[0], txt, skipnotify);
 
-	if (isHit || isKill) {
+	if (isKill) {
 		writeTextToConsole(&consoles[2], txt, skipnotify);
-	} else if (isChat) {
+	} else if (isHit) {
 		writeTextToConsole(&consoles[3], txt, skipnotify);
+	} else if (isChat) {
+		writeTextToConsole(&consoles[4], txt, skipnotify);
 	} else {
 		writeTextToConsole(&consoles[1], txt, skipnotify);
 	}
