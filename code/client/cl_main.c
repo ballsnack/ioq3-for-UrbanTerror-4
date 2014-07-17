@@ -157,40 +157,32 @@ CLIENT RELIABLE COMMAND COMMUNICATION
 =======================================================================
 */
 
-char *replaceToken(char *string, char *key, char *replace) {
-  int numToks = 0;
-  char *s, *pos, *s2;
-  int tokLen = strlen(key) + 1;
+char *replaceStr(char *string, char *find, char *replace) {
+	int numFound = 0, front;
+	int findLen = strlen(find);
+	int repLen = strlen(replace);
+	char *pos;
+	char *s;
 
-  char *tokenDollar = Z_Malloc(tokLen + 1);
-  sprintf(tokenDollar, "$%s", key);
-  char *tokenPound = Z_Malloc(tokLen + 1);
-  sprintf(tokenPound, "#%s", key);
+	pos = string;
+	while ((pos = strstr(pos, find)) != NULL) {
+		pos++;
+		numFound++;
+	}
 
-  int tokIndex;
+	s = (char *)malloc(strlen(string) + (repLen - findLen) * numFound + 1);
+	s[0] = 0;
 
-  s = string;
-  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
-    s += strlen(key);
-    numToks++;
-  }
+	while (numFound--) {
+		pos = strstr(string, find);
+		front = pos - string;
+		strncat(s, string, front);
+		strcat(s, replace);
+		string += front + findLen;
+	}
 
-  if (!numToks) {
-    return string;
-  }
-
-  s = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
-  s2 = Z_Malloc(strlen(string) + (strlen(replace) - tokLen) * numToks + 1);
-
-  sprintf(s, "%s", string);
-
-  while ((pos = strstr(s, tokenDollar)) != NULL || (pos = strstr(s, tokenPound)) != NULL) {
-    sprintf(s2, "%s", s);
-    tokIndex = pos - s;
-    s[tokIndex] = 0;
-    sprintf(s, "%s%s%s", s, replace, s2 + tokIndex + tokLen);
-  }
-  return s;
+	strcat(s, string);
+	return s;
 }
 
 /*
@@ -202,54 +194,59 @@ not have future usercmd_t executed before it is executed
 ======================
 */
 void CL_AddReliableCommand( const char *cmd ) {
-	int index;
-  	char *s;
-  	char health[4];
-  	char *teamname;
-  	char *oteamname;
-  	char *pname;
+	int   index;
+	char *s, *serverInfo;
+	char *redTeam, *blueTeam;
+	char *pName, *teamName, *oTeamName;
+	char health[4];
 
-  s = Z_Malloc(strlen(cmd) + 1);
-  Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
+	s = Z_Malloc(strlen(cmd) + 1);
+	Com_sprintf(s, strlen(cmd) + 1, "%s", cmd);
 
-  Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
-  pname = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n");
+	Com_sprintf(health, 4, "%i", cl.snap.ps.stats[0]);
+	pName = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + cl.snap.ps.clientNum], "n");
+	s = replaceStr(s, "$p", pName);
 
-  if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
-  	teamname = clc.g_teamnamered;
-  	oteamname = clc.g_teamnameblue;
-  	if (!*teamname)
-  		teamname = "Red Dragons";
-  	if (!*oteamname)
-  		oteamname = "SWAT";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
-  	teamname = clc.g_teamnameblue;
-  	oteamname = clc.g_teamnamered;
-  	if (!*teamname)
-  		teamname = "SWAT";
-  	if (!*oteamname)
-  		oteamname = "Red Dragons";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
-  	teamname = "";
-  } else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
-  	teamname = "Spectator";
-  }
+	oTeamName = "Everyone";
+	serverInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SERVERINFO];
+	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED || cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+		redTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnamered"));
+		if (!redTeam || !*redTeam)
+			redTeam = "Red Dragons";
 
-  s = replaceToken(s, "hp", health);
-  s = replaceToken(s, "p", pname);
-  s = replaceToken(s, "team", teamname);
-  s = replaceToken(s, "oteam", oteamname);
+		blueTeam = CopyString(Info_ValueForKey(serverInfo, "g_teamnameblue"));
+		if (!blueTeam || !*blueTeam)
+		 blueTeam = "SWAT";
 
-  cmd = s;
+		if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+			teamName = redTeam;
+			oTeamName = blueTeam;
+		} else {
+			teamName = blueTeam;
+			oTeamName = redTeam;
+		}
+	} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
+		teamName = "";
 
-  // if we would be losing an old command that hasn't been acknowledged,
-  // we must drop the connection
-  if ( clc.reliableSequence - clc.reliableAcknowledge > MAX_RELIABLE_COMMANDS ) {
-    Com_Error( ERR_DROP, "Client command overflow" );
-  }
-  clc.reliableSequence++;
-  index = clc.reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
-  Q_strncpyz( clc.reliableCommands[ index ], cmd, sizeof( clc.reliableCommands[ index ] ) );
+	} else {
+		teamName = "Spectator";
+	}
+
+	s = replaceStr(s, "$hp", health);
+
+	s = replaceStr(s, "$team", teamName);
+	s = replaceStr(s, "$oteam", oTeamName);
+
+	cmd = s;
+
+	// if we would be losing an old command that hasn't been acknowledged,
+	// we must drop the connection
+	if ( clc.reliableSequence - clc.reliableAcknowledge > MAX_RELIABLE_COMMANDS ) {
+		Com_Error( ERR_DROP, "Client command overflow" );
+	}
+	clc.reliableSequence++;
+	index = clc.reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
+	Q_strncpyz( clc.reliableCommands[ index ], cmd, sizeof( clc.reliableCommands[ index ] ) );
 }
 
 /*
