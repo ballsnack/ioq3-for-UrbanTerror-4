@@ -93,7 +93,6 @@ cvar_t	*cl_autokevdroponflag;
 cvar_t  *cl_lastServerAddress;
 
 void CL_Maplist_f(void);
-void CL_RandomRGB_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1243,6 +1242,24 @@ void CL_RequestAuthorization( void ) {
 	fs = Cvar_Get ("cl_anonymous", "0", CVAR_INIT|CVAR_SYSTEMINFO );
 
 	NET_OutOfBandPrint(NS_CLIENT, cls.authorizeServer, va("getKeyAuthorize %i %s", fs->integer, nums) );*/
+}
+
+/*
+====================
+CL_RandomRGB_f
+====================
+*/
+void CL_RandomRGB(void) {
+  char s[12];
+  int r, g, b;
+  srand((unsigned)time(NULL));
+
+  r = rand() % 256;
+  g = rand() % 256;
+  b = rand() % 256;
+
+  Com_sprintf(s, 12, "%i %i %i", r, g, b);
+  Cvar_Set("cg_rgb", s);
 }
 
 /*
@@ -2636,7 +2653,7 @@ void CL_Frame ( int msec ) {
     cl.lastHealth = cl.snap.ps.stats[0];
 
 	if (cl_randomrgb->integer == 3) {
-		CL_RandomRGB_f();
+		CL_RandomRGB();
 	}
 }
 
@@ -2737,7 +2754,7 @@ void CL_StartHunkUsers( void ) {
 	}
 
 	if (cl_randomrgb->integer == 2) {
-		CL_RandomRGB_f();
+		CL_RandomRGB();
 	}
 }
 
@@ -2959,8 +2976,6 @@ CL_Init
 void CL_Init( void ) {
 	Com_Printf( "----- Client Initialization -----\n" );
 
-	srand((unsigned)time(NULL));
-
 	Con_Init ();	
 
 	CL_ClearState ();
@@ -3119,7 +3134,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("model", CL_SetModel_f );
 	Cmd_AddCommand ("video", CL_Video_f );
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
-	Cmd_AddCommand ("randomrgb", CL_RandomRGB_f);
+	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	CL_InitRef();
 
@@ -3128,7 +3143,7 @@ void CL_Init( void ) {
 	Cbuf_Execute ();
 
 	if (cl_randomrgb->integer == 1 ){
-		CL_RandomRGB_f();
+		CL_RandomRGB();
 	}
 
 	Cvar_Set( "cl_running", "1" );
@@ -4060,23 +4075,6 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 	}
 
 	return qfalse;
-}
-
-/*
-====================
-CL_RandomRGB_f
-====================
-*/
-void CL_RandomRGB_f(void) {
-  char s[12];
-  int r, g, b;
-
-  r = rand() % 256;
-  g = rand() % 256;
-  b = rand() % 256;
-
-  Com_sprintf(s, 12, "%i %i %i", r, g, b);
-  Cvar_Set("cg_rgb", s);
 }
 
 /*
