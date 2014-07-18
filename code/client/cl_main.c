@@ -93,6 +93,7 @@ cvar_t	*cl_autokevdroponflag;
 cvar_t  *cl_lastServerAddress;
 
 void CL_Maplist_f(void);
+void CL_StealRGB_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -3136,6 +3137,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
+	Cmd_AddCommand ("stealrgb", CL_StealRGB_f);
 	CL_InitRef();
 
 	SCR_Init ();
@@ -4075,6 +4077,73 @@ qboolean CL_CDKeyValidate( const char *key, const char *checksum ) {
 	}
 
 	return qfalse;
+}
+
+/*
+====================
+CL_StealRGB_f
+====================
+*/
+int stringToClientNum(char *s) {
+	int num;
+	char *fail;
+	num = strtol(s, fail, 10);
+	if (!*fail) {
+		return num;
+	}
+ 
+	char  *comp;
+	int i, match, matches = 0;
+ 
+	for (i = 0; i < 64; i++) {
+		comp = Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + i], "n");
+		if (!Q_stricmp(comp, s)) {
+			return i;
+		}
+ 
+		if (Q_strisub(comp, s)) {
+			matches++;
+			match = i;
+		}
+	}
+ 
+	if (!matches) {
+		return -1;
+	} else if (matches > 1) {
+		return -2;
+	} else {
+		return match;
+	}
+}
+
+void CL_StealRGB_f(void) {
+	if (cls.state != CA_ACTIVE) {
+		Com_Printf("You are not connected to a server.\n");
+		return;
+	}
+
+	if (Cmd_Argc() < 2) {
+		Com_Printf("usage: stealrgb [playername|playernum]");
+		return;
+	}
+
+	int playernum = stringToClientNum(Cmd_Argv(1));
+	char rgb[14];
+	char *r, *g, *b;
+
+	if (playernum == -1) {
+		Com_Printf("Player not found.\n");
+		return;
+	} else if (playernum == -2) {
+		Com_Printf("Multiple matches found.\n");
+		return;
+	}
+
+	r = CopyString(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + playernum], "a0"));
+	g = CopyString(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + playernum], "a1"));
+	b = CopyString(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + playernum], "a2"));
+	Com_sprintf(rgb, 14, "%s, %s, %s", r, g, b);
+	Cvar_Set("cg_rgb", rgb);
 }
 
 /*

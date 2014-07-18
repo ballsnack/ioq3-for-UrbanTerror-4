@@ -53,6 +53,7 @@ _<b>Other</b>_
 + `randomrgb` - generate a random RGB
 + `maplist` - output list of maps on the server
 + `findcvar [string]` - finds all cvars with with the specified string in their names
++ `stealrgb [playername|playerstring]` - steal another player's rgb
 
 ### Chat Variables ###
 + `$hp` - chat your current health
