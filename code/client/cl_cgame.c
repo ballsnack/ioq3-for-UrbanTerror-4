@@ -418,7 +418,7 @@ rescan:
 
 	if (cl_teamchatIndicator->string) {
 		if (!strcmp(cmd, "tcchat")) {
-			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator) + 3;
+			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator->string) + 3;
 			char *s2 = (char *)malloc(newStrlen);
 			int team = atoi(Cmd_Argv(1));
 			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
