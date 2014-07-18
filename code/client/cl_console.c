@@ -45,11 +45,12 @@ char *consoleNames[] = {
 	"Chat",
 	"Dev",
 };
-int numConsoles = 6;
+int numConsoles = 5;
 
 qboolean chatNext = qfalse; // Used to send the \n that follows a chat message to the chat console
 qboolean hitNext = qfalse;
 qboolean killNext = qfalse;
+qboolean devNext = qfalse;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
@@ -618,7 +619,9 @@ void CL_ConsolePrint( char *txt ) {
 	qboolean isChat = chatNext;
 	qboolean isHit = hitNext;
 	qboolean isKill = killNext;
-
+	qboolean isDev = devNext;
+	
+	devNext = qfalse;
 	chatNext = qfalse;
 	hitNext = qfalse;
 	killNext = qfalse;
@@ -1271,6 +1274,13 @@ void Con_DrawConsole( void ) {
 	if (con_tabs && !con_tabs->integer) {
 		currentCon = &consoles[CONSOLE_ALL];
 	}
+
+	if (com_developer && com_developer->integer) {
+		numConsoles = 6;
+	} else {
+		numConsoles = 5;
+	}
+
 	// check for console width changes from a vid mode change
 	Con_CheckResize (currentCon);
 
