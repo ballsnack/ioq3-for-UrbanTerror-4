@@ -19,7 +19,7 @@ _<b>HUD</b>_
 + `cl_drawhealth [0|1]` - show current health on the HUD
 + `cl_drawkaills [0|1]` - show current kills on the HUD
 + `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
-+ `cl_teamchatindicator [string]` - show a (TEAM) before client name if chat is teamchat
++ `cl_teamchatindicator [string]` - show a string before client name if chat is teamchat
 
 _<b>Sound</b>_
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps
@@ -53,7 +53,7 @@ _<b>Other</b>_
 + `randomrgb` - generate a random RGB
 + `maplist` - output list of maps on the server
 + `findcvar [string]` - finds all cvars with with the specified string in their names
-+ `stealrgb [playername|playerstring]` - steal another player's rgb
++ `stealrgb [playername]` - steal another player's rgb
 
 ### Chat Variables ###
 + `$hp` - chat your current health

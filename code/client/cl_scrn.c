@@ -501,6 +501,7 @@ void SCR_DrawKills( void ) {
 		!cl_drawKills->integer ||
 		cl.snap.ps.clientNum != clc.clientNum ||
 		!Cvar_VariableIntegerValue("cg_draw2d"))
+		clc.g_gametype == 9;
 		return;
 
 	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {

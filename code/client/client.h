@@ -231,6 +231,7 @@ typedef struct {
 
 	char 		g_teamnamered[32];
 	char 		g_teamnameblue[32];
+	int 		g_gametype;
 } clientConnection_t;
 
 extern	clientConnection_t clc;

@@ -4123,7 +4123,7 @@ void CL_StealRGB_f(void) {
 	}
 
 	if (Cmd_Argc() < 2) {
-		Com_Printf("usage: stealrgb [playername|playernum]");
+		Com_Printf("usage: stealrgb [playername]");
 		return;
 	}
 
