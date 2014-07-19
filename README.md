@@ -26,7 +26,7 @@ _<b>Sound</b>_
 + `s_radio [0|1]` - disable/enable radio calls
 
 _<b>Userinfo</b>_
-+ `cl_randomrgb [0|3]` - generate random cg_rgb upon startup
++ `cl_randomrgb [0|4]` - generate random cg_rgb upon startup
 + `clan [string]` - add a clantag to your name
 + `cl_clanpos [0|1]` - change the position of the clantag
 

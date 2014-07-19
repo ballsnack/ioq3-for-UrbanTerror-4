@@ -1247,7 +1247,7 @@ void CL_RequestAuthorization( void ) {
 
 /*
 ====================
-CL_RandomRGB_f
+CL_RandomRGB
 ====================
 */
 void CL_RandomRGB(void) {
@@ -2645,16 +2645,23 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
+
 	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
       int threshold = cl_autokevdrop->integer;
       if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
         Cbuf_AddText("ut_itemdrop kevlar\n");
       		}
     	}
-    cl.lastHealth = cl.snap.ps.stats[0];
-
+    cl.lastHealth = cl.snap.ps.stats[0];	
 	if (cl_randomrgb->integer == 3) {
 		CL_RandomRGB();
+	}
+	
+	if (cl_randomrgb->integer == 4) {
+		if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
+		cl.spawnCount = cl.snap.ps.persistant[PERS_SPAWN_COUNT];
+		CL_RandomRGB();
+		}
 	}
 }
 
