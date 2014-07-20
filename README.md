@@ -17,7 +17,7 @@ _<b>HUD</b>_
 + `cl_drawclockposx [0|--]` - change the x-axis of the clock
 + `cl_drawclockposy [0|--]` - change the y-axis of the clock
 + `cl_drawhealth [0|1]` - show current health on the HUD
-+ `cl_drawkaills [0|1]` - show current kills on the HUD
++ `cl_drawkills [0|1]` - show current kills on the HUD
 + `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
 + `cl_teamchatindicator [string]` - show a string before client name if chat is teamchat
 

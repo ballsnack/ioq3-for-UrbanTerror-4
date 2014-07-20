@@ -504,12 +504,6 @@ void SCR_DrawKills( void ) {
 		clc.g_gametype == 9)
 		return;
 
-	if (cl.snap.ps.persistant[PERS_SPAWN_COUNT] != cl.spawnCount) {
-		cl.spawnCount = cl.snap.ps.persistant[PERS_SPAWN_COUNT];
-		cl.currentKills = 0;
-	}
-
-
 	char killStr[12];
 	int x = 56;
 	int y = 437;
