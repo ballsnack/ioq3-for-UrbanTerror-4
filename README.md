@@ -54,6 +54,7 @@ _<b>Other</b>_
 + `maplist` - output list of maps on the server
 + `findcvar [string]` - finds all cvars with with the specified string in their names
 + `stealrgb [playername]` - steal another player's rgb
++ `dropitems` - bind a key to `dropitems` to drop flag in ctf, and medkit in ts 
 
 ### Chat Variables ###
 + `$hp` - chat your current health

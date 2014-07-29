@@ -94,6 +94,7 @@ cvar_t  *cl_lastServerAddress;
 
 void CL_Maplist_f(void);
 void CL_StealRGB_f(void);
+void CL_DropItems_f(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -3148,6 +3149,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("randomrgb", CL_RandomRGB);
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	Cmd_AddCommand ("stealrgb", CL_StealRGB_f);
+	Cmd_AddCommand ("dropitems", CL_DropItems_f);
 	CL_InitRef();
 
 	SCR_Init ();
@@ -4154,6 +4156,21 @@ void CL_StealRGB_f(void) {
 	b = CopyString(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + playernum], "a2"));
 	Com_sprintf(rgb, 14, "%s, %s, %s", r, g, b);
 	Cvar_Set("cg_rgb", rgb);
+}
+
+/*
+====================
+CL_DropItems
+====================
+*/
+void CL_DropItems_f(void) {
+
+	if (clc.g_gametype == 7) {
+		Cbuf_AddText("ut_itemdrop flag");
+	} else if (clc.g_gametype == 4) {
+		Cbuf_AddText("ut_itemdrop medkit");
+	}
+
 }
 
 /*
