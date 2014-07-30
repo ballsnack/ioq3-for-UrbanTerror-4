@@ -20,6 +20,8 @@ _<b>HUD</b>_
 + `cl_drawkills [0|1]` - show current kills on the HUD
 + `cl_chatcolor [1|20]` - change the color of "chat:" and "teamchat:"
 + `cl_teamchatindicator [string]` - show a string before client name if chat is teamchat
++ `cl_deadText [string]` - change the `(DEAD)` string before a playername
++ `cl_chatArrow [0|1]` - remove the `>` in chat
 
 _<b>Sound</b>_
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps

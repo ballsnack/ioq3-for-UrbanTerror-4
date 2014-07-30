@@ -408,11 +408,24 @@ rescan:
 		}
 	}
 
-	if (cl_autokevdroponflag->integer) {
-		if (!strcmp(cmd, "ccprint")) {
-			if (atoi(Cmd_Argv(1)) == 0 && !strcmp(Cmd_Argv(3), Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n"))) {
-				Cbuf_AddText("ut_itemdrop kevlar\n");
-			}
+	int myTeam, colour, team;
+
+	if (strcmp(cl_deadText->string, "(DEAD) ")) {
+		if (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat")) {
+			myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			team = atoi(Cmd_Argv(1));
+
+			if (myTeam == team)
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			else
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
+			
+
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
+				colour = 7;
+
+			s = replaceStr(s, "(DEAD) ", va("%s^%i", cl_deadText->string, colour));
+			Cmd_TokenizeString(s);
 		}
 	}
 
@@ -420,11 +433,45 @@ rescan:
 		if (!strcmp(cmd, "tcchat")) {
 			int newStrlen = strlen(s) + strlen(cl_teamchatIndicator->string) + 3;
 			char *s2 = (char *)malloc(newStrlen);
-			int team = atoi(Cmd_Argv(1));
-			int colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			team = atoi(Cmd_Argv(1));
+			colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
+				colour = 7;
 
 			Com_sprintf(s2, newStrlen, "tcchat \"%s\" \"%s^%i%s\"", Cmd_Argv(1), cl_teamchatIndicator->string, colour, Cmd_Argv(2));
 			Cmd_TokenizeString(s2);
+		}
+	}
+
+	if (!cl_chatArrow->integer && (!strcmp(cmd, "tcchat") || !strcmp(cmd, "cchat"))) {
+		team = atoi(Cmd_Argv(1));
+		char *newCmd;
+		if (!strcmp(cmd, "tcchat")) {
+			colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+		} else {
+			myTeam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			
+			if (team == myTeam)
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			else
+				colour = skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
+
+			if (team == TEAM_SPECTATOR || team == TEAM_FREE)
+				colour = 7;
+		}
+		newCmd = CopyString(va("chat \"^%i%s\"", colour, Cmd_Argv(2)));
+		Cmd_TokenizeString(newCmd);
+	}
+
+	if (!strcmp(cmd, "location")) {
+		int locNum = atoi(Cmd_Argv(1));
+		cl.lastLocation = locNum;
+	}
+
+	if (cl_dropKevlarOnFlag->integer && !strcmp(cmd, "ccprint")) {
+		if (!atoi(Cmd_Argv(1)) && !strcmp(Cmd_Argv(3), Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n"))) {
+			Cbuf_AddText("ut_itemdrop kevlar\n");
 		}
 	}
 

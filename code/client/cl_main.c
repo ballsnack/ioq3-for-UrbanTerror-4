@@ -84,6 +84,9 @@ cvar_t  *cl_mouseAccelStyle;
 
 cvar_t  *cl_teamchatIndicator;
 cvar_t  *cl_randomrgb;
+cvar_t  *cl_deadText;
+cvar_t  *cl_chatArrow;
+
 cvar_t  *clan;
 cvar_t  *cl_clanpos;
 
@@ -3044,9 +3047,11 @@ void CL_Init( void ) {
 	// 1: new implementation
 	cl_mouseAccelStyle = Cvar_Get( "cl_mouseAccelStyle", "0", CVAR_ARCHIVE );
 
-    // offset for the power function (for style 1, ignored otherwise)
-    // this should be set to the max rate value
-    cl_mouseAccelOffset = Cvar_Get( "cl_mouseAccelOffset", "5", CVAR_ARCHIVE );
+	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
+	cl_deadText = Cvar_Get( "cl_deadText", "(DEAD) ", CVAR_ARCHIVE );
+	cl_chatArrow = Cvar_Get( "cl_chatArrow", "1", CVAR_ARCHIVE );
+	cl_crosshairHealth = Cvar_Get( "cl_crosshairHealth", "0", CVAR_ARCHIVE );
+
 
 	cl_mouseAccelOffset = Cvar_Get( "cl_mouseAccelOffset", "5", CVAR_ARCHIVE );
   	
