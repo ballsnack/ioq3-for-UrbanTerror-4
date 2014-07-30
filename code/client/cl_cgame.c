@@ -464,12 +464,7 @@ rescan:
 		Cmd_TokenizeString(newCmd);
 	}
 
-	if (!strcmp(cmd, "location")) {
-		int locNum = atoi(Cmd_Argv(1));
-		cl.lastLocation = locNum;
-	}
-
-	if (cl_dropKevlarOnFlag->integer && !strcmp(cmd, "ccprint")) {
+	if (cl_autokevdroponflag->integer && !strcmp(cmd, "ccprint")) {
 		if (!atoi(Cmd_Argv(1)) && !strcmp(Cmd_Argv(3), Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "n"))) {
 			Cbuf_AddText("ut_itemdrop kevlar\n");
 		}
