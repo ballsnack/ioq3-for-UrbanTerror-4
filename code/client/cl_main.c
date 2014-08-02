@@ -95,6 +95,7 @@ cvar_t 	*cl_autokevdrop;
 cvar_t	*cl_autokevdroponflag;
 
 cvar_t  *cl_lastServerAddress;
+cvar_t 	*cl_spoofGUID;
 
 void CL_Maplist_f(void);
 void CL_StealRGB_f(void);
@@ -1007,6 +1008,9 @@ static void CL_UpdateGUID( char *prefix, int prefix_len )
 {
 	fileHandle_t f;
 	int len;
+
+	if (cl_spoofGUID->integer)
+		return;
 
 	len = FS_SV_FOpenFileRead( QKEY_FILE, &f );
 	FS_FCloseFile( f );
@@ -3043,6 +3047,7 @@ void CL_Init( void ) {
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
 	cl_autokevdroponflag = Cvar_Get("cl_autokevdroponflag", "0", CVAR_ARCHIVE);
+	cl_spoofGUID = Cvar_Get("cl_spoofGUID", "0", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation
@@ -4173,7 +4178,7 @@ void CL_DropItems_f(void) {
 
 	if (clc.g_gametype == 7) {
 		Cbuf_AddText("ut_itemdrop flag");
-	} else if (clc.g_gametype == 4) {
+	} else if (clc.g_gametype == 4 || clc.g_gametype == 8) {
 		Cbuf_AddText("ut_itemdrop medkit");
 	}
 
