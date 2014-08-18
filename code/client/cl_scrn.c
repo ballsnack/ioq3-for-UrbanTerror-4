@@ -536,7 +536,7 @@ void SCR_DrawKills( void ) {
 
 	if (cl_drawKills->integer == 1 || cl_drawKills->integer == 3) {
 		Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
-		SCR_DrawCondensedString(x, y, 8, killStr, g_color_table[7], qfalse );
+		SCR_DrawStringExt(x, y, 8, killStr, g_color_table[7], qfalse );
 	}
 
 	int spacing = 4;
@@ -557,7 +557,7 @@ void SCR_DrawKills( void ) {
 			}
 		} else {
 			SCR_DrawNamedPic(300, 450, size, size, "skull.tga");
-			SCR_DrawCondensedString(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
+			SCR_DrawStringExt(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
 		}
 	}
 }
