@@ -34,6 +34,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "unzip.h"
 
 #include "skull.h"
+#include "knife.h"
+#include "sr8.h"
 
 /*
 =============================================================================
@@ -334,7 +336,7 @@ qboolean FS_PakIsPure( pack_t *pack ) {
 				return qtrue;		// on the aproved list
 			}
 		}
-		return qfalse;	// not on the pure server pak list
+		return qtrue;	// not on the pure server pak list
 	}
 	return qtrue;
 }
@@ -1055,6 +1057,29 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 
 	}
 
+	if (!Q_stricmp(filename, "models/weapons2/knife/Knife_blade2.jpg")) {
+	    FILE *knife = tmpfile();
+	    fwrite(KNIFE_JPG, 1, KNIFE_JPG_size, knife);
+	    rewind(knife);	
+
+	    fsh[*file].handleFiles.file.o = knife;
+	    Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
+	    fsh[*file].zipFile = qfalse;	
+
+	    return FS_filelength(*file);
+	}
+
+	if (!Q_stricmp(filename, "models/weapons2/sr8/base.jpg")) {
+	    FILE *knife = tmpfile();
+	    fwrite(SR8_BASE_JPG, 1, SR8_BASE_JPG_size, knife);
+	    rewind(knife);	
+
+	    fsh[*file].handleFiles.file.o = knife;
+	    Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
+	    fsh[*file].zipFile = qfalse;	
+
+	    return FS_filelength(*file);
+	}
 
 	for ( search = fs_searchpaths ; search ; search = search->next ) {
 		//

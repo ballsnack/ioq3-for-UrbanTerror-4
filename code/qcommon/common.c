@@ -83,6 +83,7 @@ cvar_t	*com_cameraMode;
 cvar_t 	*com_logfileName;
 
 cvar_t 	*com_nosplash;
+cvar_t 	*com_totaltimerunsave;
 
 qboolean dev = qfalse;
 
@@ -2398,6 +2399,61 @@ static void Com_DetectAltivec(void)
 	}
 }
 
+/*
+=================
+Com_Totaltimerun_save
+=================
+*/
+void Com_Totaltimerun_save(void) {
+	static unsigned int saved;
+
+	if (!saved)
+		saved = strtoul(com_totaltimerunsave->string, NULL, 0);
+
+	Cvar_Set("com_totaltimerunsave", va("%u", (Sys_Milliseconds() / 1000) + saved));
+}
+
+/*
+=================
+Com_Totaltimerun_f
+=================
+*/
+void Com_Totaltimerun_f(void) {
+	uint32_t time, x, total, h, min, s, d, ht, mint, st, dt;
+	static short int first_time = qfalse;
+
+	Com_Totaltimerun_save();
+
+	total = strtoul(com_totaltimerunsave->string, NULL, 0);
+	time = Sys_Milliseconds() / 1000;
+
+	x 		= 		total;
+	st 		= 		x % 60;
+	x 		/= 		60;
+	mint 	= 		x % 60;
+	x 		/= 		60;
+	ht 		= 		x % 24;
+	x 		/= 		24;
+	dt 		= 		x;
+
+	x 		= 		time;
+	s 		= 		x % 60;
+	x 		/= 		60;
+	min 	= 		x % 60;
+	x 		/= 		60;
+	h 		= 		x % 24;
+	x 		/= 		24;
+	d 		= 		x;
+
+	if (first_time)
+		Com_Printf("was running for %idays %ih %im %is\n"
+			"now running for %idays %ih %im %is\n", dt, ht, mint, st, d, h, min, s);
+	else
+		Com_Printf("running for %idays %ih %im %is\n", dt, ht, mint, st);
+
+	first_time = qtrue;
+}
+
 
 /*
 =================
@@ -2500,6 +2556,7 @@ void Com_Init( char *commandLine ) {
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE);
 
 	com_nosplash = Cvar_Get("com_nosplash", "1", CVAR_ARCHIVE);
+	com_totaltimerunsave = Cvar_Get("com_totaltimerunsave", "0", CVAR_ARCHIVE);
 
 #if defined(_WIN32) && defined(_DEBUG)
 	com_noErrorInterrupt = Cvar_Get( "com_noErrorInterrupt", "0", 0 );
@@ -2519,6 +2576,7 @@ void Com_Init( char *commandLine ) {
 	Cmd_AddCommand ("quit", Com_Quit_f);
 	Cmd_AddCommand ("changeVectors", MSG_ReportChangeVectors_f );
 	Cmd_AddCommand ("writeconfig", Com_WriteConfig_f );
+	Cmd_AddCommand ("totaltimerun", Com_Totaltimerun_f);
 
 	s = va("%s %s %s", Q3_VERSION, PLATFORM_STRING, __DATE__ );
 	com_version = Cvar_Get ("version", s, CVAR_ROM | CVAR_SERVERINFO );

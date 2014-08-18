@@ -73,8 +73,7 @@ cvar_t 		*con_fadeIn;
 cvar_t 		*con_margin;
 cvar_t		*con_tabs;
 cvar_t		*con_borderRGB;
-
-cvar_t 		*cl_noKevOnFlag;
+cvar_t 		*con_saybg;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -410,8 +409,7 @@ void Con_Init (void) {
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
 	con_borderRGB = Cvar_Get("con_borderRGB", "0 100 100", CVAR_ARCHIVE);
-
-	cl_noKevOnFlag = Cvar_Get("cl_noKevOnFlag", "0", CVAR_ARCHIVE);
+	con_saybg = Cvar_Get("con_saybg", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1010,13 +1008,15 @@ void Con_DrawNotify (void)
 
 	if ( cls.keyCatchers & KEYCATCH_MESSAGE )
 	{
-		vec4_t black;
-		black[0] = black[1] = black[2] = 0;
-		black[3] = 0.5;
-		SCR_FillRect(0, 0, 640, 22, black);
+		if (con_saybg->integer) {
+			vec4_t black;
+			black[0] = black[1] = black[2] = 0;
+			black[3] = 0.5;
+			SCR_FillRect(0, 0, 640, 22, black);	
 
-		black[0] = black[1] = black[2] = 1;
-		SCR_FillRect(0, 22 - 1, 640, 1, black);
+			black[0] = black[1] = black[2] = 1;
+			SCR_FillRect(0, 22 - 1, 640, 1, black);
+		}
 
 		if (chat_team)
 		{
