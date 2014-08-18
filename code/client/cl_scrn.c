@@ -559,7 +559,7 @@ void SCR_DrawKills( void ) {
 			}
 		} else {
 			SCR_DrawNamedPic(304, 450, size, size, "skull.tga");
-			SCR_DrawCondensedString(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
+			SCR_DrawStringExt(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
 		}
 	}
 }
