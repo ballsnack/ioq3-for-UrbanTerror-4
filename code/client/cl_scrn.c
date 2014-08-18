@@ -540,8 +540,9 @@ void SCR_DrawKills( void ) {
 		SCR_DrawStringExt(x, y, 8, killStr, g_color_table[7], qfalse );
 	}
 
-	int spacing = 4;
-	int size = 20;
+
+	int spacing = 2;
+	int size = 16;
 
 	int width;
 	int i;
@@ -557,8 +558,8 @@ void SCR_DrawKills( void ) {
 				x += spacing + size;
 			}
 		} else {
-			SCR_DrawNamedPic(300, 450, size, size, "skull.tga");
-			SCR_DrawStringExt(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
+			SCR_DrawNamedPic(304, 450, size, size, "skull.tga");
+			SCR_DrawCondensedString(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
 		}
 	}
 }
