@@ -502,13 +502,14 @@ void SCR_PersistentCrosshair(void) {
 		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
-	if (Cvar_VariableIntegerValue("cg_drawcrosshair"))
-		Cvar_Set("cg_drawcrosshair", "0");
-
 	int size = Cvar_VariableIntegerValue("cg_crosshairsize");
 
-	if (cl_persistentcrosshair->integer)
+	if (cl_persistentcrosshair->integer) {
+		Cbuf_AddText("cg_crosshairrgb 1 1 1 0");
 		SCR_DrawNamedPic(320 - size/2, 240 - size/2, size, size, "gfx/crosshairs/static/dot.tga");
+	} else if (cl_persistentcrosshair->integer == 0) {
+		Cbuf_AddText("cg_crosshairrgb 1 1 1 1");
+	}
 }
 
 /*
