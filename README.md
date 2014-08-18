@@ -22,6 +22,7 @@ _<b>HUD</b>_
 + `cl_teamchatindicator [string]` - show a string before client name if chat is teamchat
 + `cl_deadText [string]` - change the `(DEAD)` string before a playername
 + `cl_chatArrow [0|1]` - remove the `>` in chat
++ `cl_persistentcrosshair [0|1]` - always show the dot crosshair
 
 _<b>Sound</b>_
 + `s_disableEnvSounds [0|1]` - disable environment sounds on maps

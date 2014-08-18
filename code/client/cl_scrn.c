@@ -39,6 +39,7 @@ cvar_t      *cl_drawclockposy;
 cvar_t 		*cl_crosshairhealthcolor;
 cvar_t 		*cl_drawhealth;
 cvar_t		*cl_drawKills;
+cvar_t 		*cl_persistentcrosshair;
 
 /*
 ================
@@ -491,6 +492,27 @@ void SCR_CrosshairHealthColor(void){
 
 /*
 =================
+SCR_PersistentCrosshair
+=================
+*/
+void SCR_PersistentCrosshair(void) {
+	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
+		cl.snap.ps.pm_type > 4 ||
+		!cl_perscrosshair->integer ||
+		!Cvar_VariableIntegerValue("cg_draw2d"))
+		return;
+
+	if (Cvar_VariableIntegerValue("cg_drawcrosshair"))
+		Cvar_Set("cg_drawcrosshair", "0");
+
+	int size = Cvar_VariableIntegerValue("cg_crosshairsize");
+
+	if (cl_perscrosshair->integer)
+		SCR_DrawNamedPic(320 - size/2, 240 - size/2, size, size, "gfx/crosshairs/static/dot.tga");
+}
+
+/*
+=================
 SCR_DrawKills
 =================
 */
@@ -604,6 +626,7 @@ void SCR_Init( void ) {
 	cl_crosshairhealthcolor = Cvar_Get ("cl_crosshairhealthcolor", "0", CVAR_ARCHIVE);
     cl_drawhealth = Cvar_Get ("cl_drawHealth", "1", CVAR_ARCHIVE);
 	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
+	cl_persistentcrosshair = Cvar_Get("cl_persistentcrosshair", "0", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }
@@ -677,6 +700,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 			SCR_CrosshairHealthColor();
 			SCR_DrawHealth();
 			SCR_DrawKills();
+			SCR_PersistentCrosshair();
 			break;
 		}
 	}
