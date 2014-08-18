@@ -498,7 +498,7 @@ SCR_PersistentCrosshair
 void SCR_PersistentCrosshair(void) {
 	if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR ||
 		cl.snap.ps.pm_type > 4 ||
-		!cl_perscrosshair->integer ||
+		!cl_persistentcrosshair->integer ||
 		!Cvar_VariableIntegerValue("cg_draw2d"))
 		return;
 
@@ -507,7 +507,7 @@ void SCR_PersistentCrosshair(void) {
 
 	int size = Cvar_VariableIntegerValue("cg_crosshairsize");
 
-	if (cl_perscrosshair->integer)
+	if (cl_persistentcrosshair->integer)
 		SCR_DrawNamedPic(320 - size/2, 240 - size/2, size, size, "gfx/crosshairs/static/dot.tga");
 }
 
@@ -534,8 +534,32 @@ void SCR_DrawKills( void ) {
 		y = 427;
 	}
 
-	Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
-	SCR_DrawStringExt(x, y, 8, killStr, g_color_table[7], qfalse );
+	if (cl_drawKills->integer == 1 || cl_drawKills->integer == 3) {
+		Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
+		SCR_DrawCondensedString(x, y, 8, killStr, g_color_table[7], qfalse );
+	}
+
+	int spacing = 4;
+	int size = 20;
+
+	int width;
+	int i;
+	y = 440;
+
+	if (cl_drawKills->integer > 1) {
+		if (cl.currentKills < 6) {
+			width = size * cl.currentKills + spacing * (cl.currentKills - 1);
+			x = 320 - width / 2;
+
+			for (i = 0; i < cl.currentKills; i++) {
+				SCR_DrawNamedPic(x, 450, size, size, "skull.tga");
+				x += spacing + size;
+			}
+		} else {
+			SCR_DrawNamedPic(300, 450, size, size, "skull.tga");
+			SCR_DrawCondensedString(321, 456, 8, va("x%i", cl.currentKills), g_color_table[7], qfalse);
+		}
+	}
 }
 
 
