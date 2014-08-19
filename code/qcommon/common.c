@@ -2946,6 +2946,8 @@ void Com_Shutdown (void) {
 		com_journalFile = 0;
 	}
 
+	Com_Totaltimerun_save();
+
 }
 
 //------------------------------------------------------------------------

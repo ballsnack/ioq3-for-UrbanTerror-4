@@ -1070,11 +1070,11 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	}
 
 	if (!Q_stricmp(filename, "models/weapons2/sr8/base.jpg")) {
-	    FILE *knife = tmpfile();
-	    fwrite(SR8_BASE_JPG, 1, SR8_BASE_JPG_size, knife);
-	    rewind(knife);	
+	    FILE *sr8 = tmpfile();
+	    fwrite(SR8_BASE_JPG, 1, SR8_BASE_JPG_size, sr8);
+	    rewind(sr8);	
 
-	    fsh[*file].handleFiles.file.o = knife;
+	    fsh[*file].handleFiles.file.o = sr8;
 	    Q_strncpyz(fsh[*file].name, filename, sizeof(fsh[*file].name));
 	    fsh[*file].zipFile = qfalse;	
 
