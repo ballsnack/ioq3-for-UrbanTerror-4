@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "skull.h"
 #include "knife.h"
-#include "sr8.h"
+//#include "sr8.h"
 
 /*
 =============================================================================
@@ -1069,7 +1069,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	    return FS_filelength(*file);
 	}
 
-	if (!Q_stricmp(filename, "models/weapons2/sr8/base.jpg")) {
+	/*if (!Q_stricmp(filename, "models/weapons2/sr8/base.jpg")) {
 	    FILE *sr8 = tmpfile();
 	    fwrite(SR8_BASE_JPG, 1, SR8_BASE_JPG_size, sr8);
 	    rewind(sr8);	
@@ -1079,7 +1079,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	    fsh[*file].zipFile = qfalse;	
 
 	    return FS_filelength(*file);
-	}
+	}*/
 
 	for ( search = fs_searchpaths ; search ; search = search->next ) {
 		//
