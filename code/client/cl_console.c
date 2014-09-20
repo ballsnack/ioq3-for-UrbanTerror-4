@@ -133,7 +133,7 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 
 int adjustedScreenWidth = SCREEN_WIDTH;
 int margin = 0;
-	
+int adjustedXMargin = 0;
 
 /*
 ================
@@ -474,7 +474,7 @@ int nameToTeamColour(char *name) {
 
 		}
 	}
-	
+
 	return team;
 }
 
@@ -1337,10 +1337,13 @@ Scroll it up or down
 void Con_RunConsole (void) {
 	adjustedScreenWidth = SCREEN_WIDTH;
 	margin = 0;
+	adjustedXMargin = 0;
+
 	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50) {
 		Cvar_Set("con_fadeIn", "1");
 		adjustedScreenWidth = SCREEN_WIDTH - con_margin->integer * 2;
 		margin = con_margin->integer;
+		adjustedXMargin = margin * (cls.glconfig.vidWidth / 640.0);
 		currentCon->yadjust = margin;
 	}
 
