@@ -100,6 +100,7 @@ cvar_t 	*cl_spoofGUID;
 void CL_Maplist_f(void);
 void CL_StealRGB_f(void);
 void CL_DropItems_f(void);
+void CL_GametypeBinds(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -1964,6 +1965,10 @@ void CL_DownloadMenu(int key)
 
 }
 
+qboolean CL_IsDownloading(void) {
+	return clc.cURLUsed;
+}
+
 /*
 =================
 CL_CheckForResend
@@ -2654,6 +2659,8 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
+	if (cls.state == CA_ACTIVE)
+		CL_GametypeBinds();
 
 	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
     	int threshold = cl_autokevdrop->integer;
@@ -3161,6 +3168,7 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	Cmd_AddCommand ("stealrgb", CL_StealRGB_f);
 	Cmd_AddCommand ("dropitems", CL_DropItems_f);
+	Cmd_AddCommand ("updateguid", CL_UpdateGUID);
 	CL_InitRef();
 
 	SCR_Init ();
@@ -4182,6 +4190,23 @@ void CL_DropItems_f(void) {
 		Cbuf_AddText("ut_itemdrop medkit");
 	}
 
+}
+
+/*
+====================
+gametype binds
+====================
+*/
+void CL_GametypeBinds(void) {
+
+	if (clc.g_gametype == 9) {
+		Cbuf_AddText("bind z save");
+		Cbuf_AddText("bind x load");
+	} else {
+		Cbuf_AddText("bind z ut_zoomin");
+		Cbuf_AddText("bind x ut_zoomreset");
+		Cbuf_AddText("bind mouse1 \"attack; ut_zoomreset\"");
+	}
 }
 
 /*

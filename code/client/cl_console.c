@@ -73,6 +73,7 @@ cvar_t 		*con_fadeIn;
 cvar_t 		*con_margin;
 cvar_t		*con_tabs;
 cvar_t		*con_borderRGB;
+cvar_t 		*con_borderRGBteam;
 cvar_t 		*con_saybg;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
@@ -319,7 +320,8 @@ void Con_CheckResize (console_t *console)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	short	tbuf[CON_TEXTSIZE];
 
-	width = (adjustedScreenWidth / SMALLCHAR_WIDTH) - 2;
+	float xscale = cls.glconfig.vidWidth / 640.0;
+	width = (cls.glconfig.vidWidth - adjustedXMargin * 2 - (int)(42 * xscale)) / (SMALLCHAR_WIDTH - 1);
 
 	if (width == console->linewidth)
 		return;
@@ -409,6 +411,7 @@ void Con_Init (void) {
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
 	con_borderRGB = Cvar_Get("con_borderRGB", "0 100 100", CVAR_ARCHIVE);
+	con_borderRGBteam = Cvar_Get("con_borderRGBteam", "0", CVAR_ARCHIVE);
 	con_saybg = Cvar_Get("con_saybg", "0", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
@@ -456,22 +459,22 @@ void Con_Linefeed (console_t *console, qboolean skipnotify)
 }
 
 int nameToTeamColour(char *name) {
-	int i, team = 2;
+	int i, team = 2, myteam;
 	char *cs;
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		cs = cl.gameState.stringData + cl.gameState.stringOffsets[544 + i];
 		if (!Q_stricmp(Info_ValueForKey(cs, "n"), name)) {
 			team = atoi(Info_ValueForKey(cs, "t"));
-			if (team == TEAM_RED) {
-				team = 1;
-			} else if (team == TEAM_BLUE) {
-				team = 4;
-			} else {
-				team = 2;
-			}
-			break;
+			myteam = atoi(Info_ValueForKey(cl.gameState.stringData + cl.gameState.stringOffsets[544 + clc.clientNum], "t"));
+			
+			if (team == myteam)
+				return skinToChatColour(team, Cvar_VariableValue("cg_skinAlly"));
+			else
+				return skinToChatColour(team, Cvar_VariableValue("cg_skinEnemy"));
+
 		}
 	}
+	
 	return team;
 }
 
@@ -727,14 +730,11 @@ void CL_ConsolePrint( char *txt ) {
 					isKill = qtrue;
 					killNext = qtrue;
 					if (con_coloredKills && con_coloredKills->integer) {
-						if (killLogNum == 1) {
-							temp = strlen(player2);
-							if (player2[temp - 2] == '\'' && player2[temp - 1] == 's') {
-								player2[temp - 2] = 0;
-							}
-						} else if (killLogNum > 1) {
-							temp = strlen(player2);
-							player2[temp - 1] = 0;
+						temp = strlen(search[i]);
+						if (!strcmp(&search[i][temp - 3], "%s.")) {
+							player2[strlen(player2) - 1] = 0;
+						} else if (Q_strsub(search[i], "%s's")) {
+							player2[strlen(player2) - 2] = 0;
 						}
 
 						team = nameToTeamColour(player1);
@@ -1092,6 +1092,21 @@ void Con_DrawSolidConsole( float frac ) {
 		lineColour[1] = 100.0/255.0;
 		lineColour[2] = 100.0/255.0;
 	}
+
+	if (con_borderRGBteam->integer == 1) {
+		if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+			Cvar_Set("con_borderRGB", "100 15 0");
+		} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+			Cvar_Set("con_borderRGB", "0 50 130");
+		} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_FREE) {
+			Cvar_Set("con_borderRGB", "0 100 0");
+		} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+			Cvar_Set("con_borderRGB", "100 100 100");
+		} else {
+			Cvar_Set("con_borderRGB", "0 100 100");
+		}
+	}
+
 	lineColour[3] = 1;
 
 	darkTextColour[0] = darkTextColour[1] = darkTextColour[2] = 0.25;
