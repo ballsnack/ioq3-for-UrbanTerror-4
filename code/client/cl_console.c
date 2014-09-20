@@ -40,8 +40,8 @@ console_t	*currentCon = &consoles[CONSOLE_ALL];
 char *consoleNames[] = {
 	"All",
 	"General",
+	"Hit",
 	"Kills",
-	"Hits",
 	"Chat",
 	"Dev",
 };
@@ -869,10 +869,10 @@ void CL_ConsolePrint( char *txt ) {
 
 	writeTextToConsole(&consoles[CONSOLE_ALL], txt, skipnotify);
 
-	if (isKill) {
-		writeTextToConsole(&consoles[CONSOLE_KILLS], txt, skipnotify);
-	} else if (isHit) {
+	if (isHit) {
 		writeTextToConsole(&consoles[CONSOLE_HITS], txt, skipnotify);
+	} else if (isKill) {
+		writeTextToConsole(&consoles[CONSOLE_KILLS], txt, skipnotify);
 	} else if (isChat) {
 		writeTextToConsole(&consoles[CONSOLE_CHAT], txt, skipnotify);
 	} else {

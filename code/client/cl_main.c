@@ -2659,7 +2659,7 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
-	if (cls.state == CA_ACTIVE)
+	if (cls.state == CA_CONNECTING)
 		CL_GametypeBinds();
 
 	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
@@ -4200,12 +4200,12 @@ gametype binds
 void CL_GametypeBinds(void) {
 
 	if (clc.g_gametype == 9) {
-		Cbuf_AddText("bind z save");
-		Cbuf_AddText("bind x load");
+		Cbuf_AddText("bind z save\n");
+		Cbuf_AddText("bind x load\n");
 	} else {
-		Cbuf_AddText("bind z ut_zoomin");
-		Cbuf_AddText("bind x ut_zoomreset");
-		Cbuf_AddText("bind mouse1 \"attack; ut_zoomreset\"");
+		Cbuf_AddText("bind z ut_zoomin\n");
+		Cbuf_AddText("bind x ut_zoomreset\n");
+		Cbuf_AddText("bind mouse1 \"+attack; ut_zoomreset\"\n");
 	}
 }
 
