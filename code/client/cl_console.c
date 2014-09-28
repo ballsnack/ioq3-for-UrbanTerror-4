@@ -29,8 +29,8 @@ int g_console_field_width = 78;
 
 #define CONSOLE_ALL 0
 #define CONSOLE_GENERAL 1
-#define CONSOLE_KILLS 2
-#define CONSOLE_HITS 3
+#define CONSOLE_KILLS 3
+#define CONSOLE_HITS 2
 #define CONSOLE_CHAT 4
 #define CONSOLE_DEV 5
 
@@ -40,7 +40,7 @@ console_t	*currentCon = &consoles[CONSOLE_ALL];
 char *consoleNames[] = {
 	"All",
 	"General",
-	"Hit",
+	"Hits",
 	"Kills",
 	"Chat",
 	"Dev",

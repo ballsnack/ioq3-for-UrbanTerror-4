@@ -100,7 +100,6 @@ cvar_t 	*cl_spoofGUID;
 void CL_Maplist_f(void);
 void CL_StealRGB_f(void);
 void CL_DropItems_f(void);
-void CL_GametypeBinds(void);
 
 //@Barbatos
 #ifdef USE_AUTH
@@ -2659,9 +2658,6 @@ void CL_Frame ( int msec ) {
 
 	cls.framecount++;
 
-	if (cls.state == CA_CONNECTING)
-		CL_GametypeBinds();
-
 	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
     	int threshold = cl_autokevdrop->integer;
     	if (cl.lastHealth > threshold && cl.snap.ps.stats[0] <= threshold) {
@@ -4190,23 +4186,6 @@ void CL_DropItems_f(void) {
 		Cbuf_AddText("ut_itemdrop medkit");
 	}
 
-}
-
-/*
-====================
-gametype binds
-====================
-*/
-void CL_GametypeBinds(void) {
-
-	if (clc.g_gametype == 9) {
-		Cbuf_AddText("bind z save\n");
-		Cbuf_AddText("bind x load\n");
-	} else {
-		Cbuf_AddText("bind z ut_zoomin\n");
-		Cbuf_AddText("bind x ut_zoomreset\n");
-		Cbuf_AddText("bind mouse1 \"+attack; ut_zoomreset\"\n");
-	}
 }
 
 /*
