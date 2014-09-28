@@ -134,6 +134,7 @@ void SCR_AdjustedDrawString(int x, int y, float size, const char *string, float 
 int adjustedScreenWidth = SCREEN_WIDTH;
 int margin = 0;
 int adjustedXMargin = 0;
+int adjustedYMargin = 0;
 
 /*
 ================
@@ -1190,10 +1191,17 @@ void Con_DrawSolidConsole( float frac ) {
 
 	SCR_AdjustedFillRect(totalOffset, y + margin, adjustedScreenWidth - totalOffset + margin, 1, lineColour);
 
-	// draw the version number
 
 	// Con_RE_SetColor( g_color_table[ColorIndex(COLOR_RED)] );
 	Con_RE_SetColor(lineColour);
+	
+	// draw the version number
+	char *version = va("%s / %s", SVN_VERSION, Cvar_VariableString("ui_modversion"));
+	i = strlen(version) + 17;
+
+	SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 12) * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
+						(lines - (SMALLCHAR_HEIGHT + SMALLCHAR_HEIGHT / 2)) + adjustedYMargin,
+						version, lineColour, qtrue);
 
 	// draw the text
 	currentCon->vislines = lines;
@@ -1207,7 +1215,7 @@ void Con_DrawSolidConsole( float frac ) {
 	// draw arrows to show the buffer is backscrolled
 		Con_RE_SetColor(lineColour);
 		for (x=0 ; x<currentCon->linewidth ; x+=4)
-			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + margin, y + margin * 2, '^' );
+			SCR_DrawSmallChar( currentCon->xadjust + (x+1)*SMALLCHAR_WIDTH + adjustedXMargin, y + margin * 2, '*' );
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
@@ -1338,12 +1346,14 @@ void Con_RunConsole (void) {
 	adjustedScreenWidth = SCREEN_WIDTH;
 	margin = 0;
 	adjustedXMargin = 0;
+	adjustedYMargin = 0;
 
 	if (con_margin && con_margin->integer > 0 && con_margin->integer <= 50) {
 		Cvar_Set("con_fadeIn", "1");
 		adjustedScreenWidth = SCREEN_WIDTH - con_margin->integer * 2;
 		margin = con_margin->integer;
 		adjustedXMargin = margin * (cls.glconfig.vidWidth / 640.0);
+		adjustedYMargin = margin * (cls.glconfig.vidHeight / 480.0);
 		currentCon->yadjust = margin;
 	}
 
