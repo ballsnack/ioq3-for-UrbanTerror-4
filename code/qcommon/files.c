@@ -325,7 +325,7 @@ struct newAsset replacementAssets[] = {
 	{"models/weapons2/knife/Knife_blade2.jpg", &knife_jpg_size, &knife_jpg},
 	{"models/weapons2/sr8/base.jpg", &sr8_base_jpg_size, &sr8_base_jpg},
 	{"models/weapons2/sr8/back.jpg", &sr8_base_jpg_size, &sr8_base_jpg},
-	//{"gfx/sprites/arrow.tga", &arrow_tga_size, &arrow_tga},
+	{"gfx/sprites/arrow.tga", &arrow_tga_size, &arrow_tga},
 	{NULL, NULL, NULL}
 };
 
