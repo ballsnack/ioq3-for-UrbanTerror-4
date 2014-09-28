@@ -189,7 +189,7 @@ void Cbuf_Execute (void)
 		quotes = 0;
 		for (i=0 ; i< cmd_text.cursize ; i++)
 		{
-			if (text[i] == '"')
+			if (text[i] == '"' && (!i || text[i - 1] != '\\'))
 				quotes++;
 			if ( !(quotes&1) &&  text[i] == ';')
 				break;	// don't break if inside a quoted string
@@ -587,13 +587,24 @@ static void Cmd_TokenizeString2( const char *text_in, qboolean ignoreQuotes ) {
 			}
 		}
 
+		// handle quote escaping
+		if (!ignoreQuotes && text[0] == '\\' && text[1] == '"') {
+			*textOut++ = '"';
+			text += 2;
+			continue;
+		}
+
 		// handle quoted strings
-    // NOTE TTimo this doesn't handle \" escaping
 		if ( !ignoreQuotes && *text == '"' ) {
 			cmd_argv[cmd_argc] = textOut;
 			cmd_argc++;
 			text++;
 			while ( *text && *text != '"' ) {
+				if (text[0] == '\\' && text[1] == '"') {
+					*textOut++ = '"';
+					text += 2;
+					continue;
+				}
 				*textOut++ = *text++;
 			}
 			*textOut++ = 0;
@@ -610,6 +621,12 @@ static void Cmd_TokenizeString2( const char *text_in, qboolean ignoreQuotes ) {
 
 		// skip until whitespace, quote, or command
 		while ( *text > ' ' ) {
+			if (!ignoreQuotes && text[0] == '\\' && text[1] == '"') {
+				*textOut++ = '"';
+				text += 2;
+				continue;
+			}
+
 			if ( !ignoreQuotes && text[0] == '"' ) {
 				break;
 			}
