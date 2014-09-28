@@ -545,6 +545,8 @@ void Con_PrevTab();
 void CL_LoadConsoleHistory( void );
 void CL_SaveConsoleHistory( void );
 
+int hourTo12(int hour);
+
 //
 // cl_scrn.c
 //

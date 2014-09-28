@@ -271,44 +271,31 @@ Cmd_Sysexec_f
 Execute a system command via command line
 ===============
 */
-void Cmd_Sysexec_f (void) {
-	int	 	 num, i;
-	char	 cmd[1024];
+int Cmd_Sysexec_f(void) {
+	FILE 	*fp;
+	int 	status;
+	char 	cmd[1024];
+	int 	i;
 
-	#ifdef WIN32 
-		char errormsg[1024];
-		STARTUPINFO si;
-		PROCESS_INFORMATION pi;
-		ZeroMemory( &si, sizeof(si) );
-		si.cb = sizeof(si);
-		ZeroMemory( &pi, sizeof(pi) ); //up to here almost carbon copy of microsoft's example
-		si.dwFlags = STARTF_USESHOWWINDOW; //needed to use the next one
-		si.wShowWindow = SW_SHOWNOACTIVATE; //needed to *not activate, i.e. not focus*
-	#endif //WIN32
-
-	num = Cmd_Argc();
-	if (num < 2) {
-		Com_Printf ("sysexec <command and parameters> : run an external system command via command line\n");
+	if (Cmd_Argc() < 2) {
+		Com_Printf("sysexec <command> [parameters]: run an external command");
 		return;
 	}
 
-	cmd[0] = 0; //required to start with a null string
-	for (i = 1; i < num; i++) {
-		strcat (cmd, Cmd_Argv(i));
-		if (i != (num-1))
-			strcat (cmd, " ");
+	for (i = 1; i < Cmd_Argc(); i++)
+		fp = popen(va("%s", Cmd_Argv(i)), "r");
+
+	if (fp == NULL) {
+		Com_Printf("Failed to run command\n");
+		return;
 	}
-	Com_Printf("Issuing external command: %s\n",cmd);
-	#ifdef WIN32
-		if(!CreateProcess( NULL,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi )) {
-			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,0,GetLastError(),0,errormsg,1024,NULL);
-			Com_Printf("Issuing of %s failed: %s.\n",cmd, errormsg);
-				if (GetLastError() == 2)
-					Com_Printf("a command can be in the path or full path can be used\n");
-		}
-	#else
-		system(cmd);
-	#endif //WIN32
+
+	while (fgets(cmd, sizeof(cmd) - 1, fp) != NULL) {
+		Com_Printf("%s", cmd);
+	}
+
+	pclose(fp);
+	return 0;
 }
 
 /*

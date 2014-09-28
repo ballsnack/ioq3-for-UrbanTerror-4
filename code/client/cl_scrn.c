@@ -435,33 +435,25 @@ void SCR_DrawDemoRecording( void ) {
 SCR_DrawClock
 =================
 */
-void SCR_DrawClock( void ) {
-    int         color = cl_drawclockcolor->integer;
-    int 		fontsize = cl_drawclockfontsize->integer;
-    int 		posx = cl_drawclockposx->integer;
-    int 		posy = cl_drawclockposy->integer;
-    char        string[16];
-    qtime_t 	myTime;
+void SCR_DrawClock(void) {
+	int 		color, fontsize, posx, posy, hour;
+	char 		string[16];
+	qtime_t		myTime;
 
-    if ( color > 20 ) color = 20;
-    if ( color < 1 ) color = 1;
-    if (Cvar_VariableValue ("cl_drawclock")) {
-            Com_RealTime( &myTime );
-    if (cl_drawclock12->integer == 0)
-            Com_sprintf( string, sizeof ( string ), "%02i:%02i", myTime.tm_hour, myTime.tm_min );
-    {
-    if (cl_drawclock12->integer == 1)
-            if (myTime.tm_hour > 12)
-                    Com_sprintf( string, sizeof ( string ), "%02i:%02i PM", myTime.tm_hour - 12, myTime.tm_min );
-            else if (myTime.tm_hour == 12 )
-                    Com_sprintf( string, sizeof ( string ), "%02i:%02i PM", 12, myTime.tm_min );
-            else if (myTime.tm_hour == 0 )
-                    Com_sprintf( string, sizeof ( string ), "%02i:%02i AM", 12, myTime.tm_min );
-            else
-                    Com_sprintf( string, sizeof ( string ), "%02i:%02i AM", myTime.tm_hour, myTime.tm_min );
-    }
-            SCR_DrawCondensedString( posx * 10, posy * 10, fontsize, string, g_color_table[color], qtrue );
-    }
+	color = cl_drawclockcolor->integer;
+	fontsize = cl_drawclockfontsize->integer;
+	posx = cl_drawclockposx->integer;
+	posy = cl_drawclockposy->integer;
+
+	if (cl_drawclock->integer) {
+		Com_RealTime(&myTime);
+		hour = myTime.tm_hour;
+		if (cl_drawclock12->integer)
+			hour = hourTo12(hour);
+
+		Com_sprintf(string, sizeof(string), "%02i:%02i", hour, myTime.tm_min);
+		SCR_DrawCondensedString(posx * 10, posy * 10, fontsize, string, g_color_table[color], qtrue);
+	}
 }
 
 /*

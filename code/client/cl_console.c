@@ -29,8 +29,8 @@ int g_console_field_width = 78;
 
 #define CONSOLE_ALL 0
 #define CONSOLE_GENERAL 1
-#define CONSOLE_KILLS 3
 #define CONSOLE_HITS 2
+#define CONSOLE_KILLS 3
 #define CONSOLE_CHAT 4
 #define CONSOLE_DEV 5
 
@@ -74,7 +74,7 @@ cvar_t 		*con_margin;
 cvar_t		*con_tabs;
 cvar_t		*con_borderRGB;
 cvar_t 		*con_borderRGBteam;
-cvar_t 		*con_saybg;
+cvar_t 		*con_drawVersion;
 
 #define	DEFAULT_CONSOLE_WIDTH	78
 
@@ -413,7 +413,7 @@ void Con_Init (void) {
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
 	con_borderRGB = Cvar_Get("con_borderRGB", "0 100 100", CVAR_ARCHIVE);
 	con_borderRGBteam = Cvar_Get("con_borderRGBteam", "0", CVAR_ARCHIVE);
-	con_saybg = Cvar_Get("con_saybg", "0", CVAR_ARCHIVE);
+	con_drawVersion = Cvar_Get("con_drawVersion", "1", CVAR_ARCHIVE);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -1009,16 +1009,6 @@ void Con_DrawNotify (void)
 
 	if ( cls.keyCatchers & KEYCATCH_MESSAGE )
 	{
-		if (con_saybg->integer) {
-			vec4_t black;
-			black[0] = black[1] = black[2] = 0;
-			black[3] = 0.5;
-			SCR_FillRect(0, 0, 640, 22, black);	
-
-			black[0] = black[1] = black[2] = 1;
-			SCR_FillRect(0, 22 - 1, 640, 1, black);
-		}
-
 		if (chat_team)
 		{
 			SCR_DrawBigStringColor (8, v, "teamchat", g_color_table[chatcolor] );
@@ -1197,12 +1187,14 @@ void Con_DrawSolidConsole( float frac ) {
 	Con_RE_SetColor(lineColour);
 	
 	// draw the version number
+	if (con_drawVersion->integer == 1) {
 	char *version = va("%s / %s", SVN_VERSION, Cvar_VariableString("ui_modversion"));
 	i = strlen(version) + 17;
 
 	SCR_DrawSmallStringExt(cls.glconfig.vidWidth - (i - 12) * (SMALLCHAR_WIDTH - 1) - adjustedXMargin,
 						(lines - (SMALLCHAR_HEIGHT + SMALLCHAR_HEIGHT / 2)) + adjustedYMargin,
 						version, lineColour, qtrue);
+	}
 
 	// draw the text
 	currentCon->vislines = lines;
@@ -1453,7 +1445,6 @@ void Con_Close( void ) {
 	currentCon->finalFrac = 0;				// none visible
 	currentCon->displayFrac = 0;
 }
-
 
 int hourTo12(int hour) {
 	return (hour % 12) ? (hour % 12) : 12;
