@@ -273,9 +273,9 @@ Execute a system command via command line
 */
 void Cmd_Sysexec_f(void) {
 	FILE 	*fp;
-	int 	status;
-	char 	cmd[1024];
-	int 	i;
+	int 	status, i;
+	char 	path[1024];
+	char 	*cmd;
 
 	if (Cmd_Argc() < 2) {
 		Com_Printf("sysexec <command> [parameters]: run an external command\n");
@@ -283,15 +283,16 @@ void Cmd_Sysexec_f(void) {
 	}
 
 	for (i = 1; i < Cmd_Argc(); i++)
-		fp = popen(va("%s", Cmd_Argv(i)), "r");
+		cmd = va("%s", Cmd_Argv(i));
 
+	fp = popen(cmd, "r");
 	if (fp == NULL) {
 		Com_Printf("Failed to run command\n");
 		return;
 	}
 
-	while (fgets(cmd, sizeof(cmd) - 1, fp) != NULL) {
-		Com_Printf("%s", cmd);
+	while (fgets(path, sizeof(path - 1), fp) != NULL) {
+		Com_Printf("%s", path);
 	}
 
 	pclose(fp);
