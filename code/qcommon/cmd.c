@@ -271,14 +271,14 @@ Cmd_Sysexec_f
 Execute a system command via command line
 ===============
 */
-int Cmd_Sysexec_f(void) {
+void Cmd_Sysexec_f(void) {
 	FILE 	*fp;
 	int 	status;
 	char 	cmd[1024];
 	int 	i;
 
 	if (Cmd_Argc() < 2) {
-		Com_Printf("sysexec <command> [parameters]: run an external command");
+		Com_Printf("sysexec <command> [parameters]: run an external command\n");
 		return;
 	}
 
@@ -295,7 +295,6 @@ int Cmd_Sysexec_f(void) {
 	}
 
 	pclose(fp);
-	return 0;
 }
 
 /*
