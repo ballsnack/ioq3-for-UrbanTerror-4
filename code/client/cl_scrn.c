@@ -474,7 +474,7 @@ void SCR_DrawHealth( void ) {
 
 	char healthStr[12];
 	int healthCol;
-	int x = 54;
+	int x = 49;
 	int y = 449;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {

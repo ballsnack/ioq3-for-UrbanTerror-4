@@ -313,6 +313,34 @@ Asset Replacement
 #include "knife.h"
 #include "sr8.h"
 #include "arrows.h"
+#include "all_chest.h"
+#include "both_arm.h"
+#include "both_leg.h"
+#include "chest.h"
+#include "head.h"
+#include "left_arm.h"
+#include "left_calf.h"
+#include "left_foot.h"
+#include "left_hand.h"
+#include "left_leg.h"
+#include "left_thigh.h"
+#include "right_arm.h"
+#include "right_calf.h"
+#include "right_foot.h"
+#include "right_hand.h"
+#include "right_leg.h"
+#include "right_thigh.h"
+#include "waist.h"
+#include "outline.h"
+#include "stamina1.h"
+#include "stamina2.h"
+#include "stamina3.h"
+#include "stamina4.h"
+#include "stamina5.h"
+#include "stamina6.h"
+#include "stamina7.h"
+#include "stamina8.h"
+#include "stamina9.h"
 
 struct newAsset {
 	char *path;
@@ -326,6 +354,34 @@ struct newAsset replacementAssets[] = {
 	{"models/weapons2/sr8/base.jpg", &sr8_base_jpg_size, &sr8_base_jpg},
 	{"models/weapons2/sr8/back.jpg", &sr8_base_jpg_size, &sr8_base_jpg},
 	{"gfx/sprites/arrow.tga", &arrow_tga_size, &arrow_tga},
+	{"gfx/hud/damage/all_chest.tga", &all_chest_tga_size, &all_chest_tga},
+	{"gfx/hud/damage/both_arm.tga", &both_arm_tga_size, &both_arm_tga},
+	{"gfx/hud/damage/both_leg.tga", &both_leg_tga_size, &both_leg_tga},
+	{"gfx/hud/damage/chest.tga", &chest_tga_size, &chest_tga},
+	{"gfx/hud/damage/head.tga", &head_tga_size, &head_tga},
+	{"gfx/hud/damage/left_arm.tga", &left_arm_tga_size, &left_arm_tga},
+	{"gfx/hud/damage/left_calf.tga", &left_calf_tga_size, &left_calf_tga},
+	{"gfx/hud/damage/left_foot.tga", &left_foot_tga_size, &left_foot_tga},
+	{"gfx/hud/damage/left_hand.tga", &left_hand_tga_size, &left_hand_tga},
+	{"gfx/hud/damage/left_leg.tga", &left_leg_tga_size, &left_leg_tga},
+	{"gfx/hud/damage/left_thigh.tga", &left_thigh_tga_size, &left_thigh_tga},
+	{"gfx/hud/damage/right_arm.tga", &right_arm_tga_size, &right_arm_tga},
+	{"gfx/hud/damage/right_calf.tga", &right_calf_tga_size, &right_calf_tga},
+	{"gfx/hud/damage/right_foot.tga", &right_foot_tga_size, &right_foot_tga},
+	{"gfx/hud/damage/right_hand.tga", &right_hand_tga_size, &right_hand_tga},
+	{"gfx/hud/damage/right_leg.tga", &right_leg_tga_size, &right_leg_tga},
+	{"gfx/hud/damage/right_thigh.tga", &right_thigh_tga_size, &right_thigh_tga},
+	{"gfx/hud/damage/waist.tga", &waist_tga_size, &waist_tga},
+	{"gfx/hud/outline.tga", &outline_tga_size, &outline_tga},
+	{"gfx/hud/stamina1.tga", &stamina1_tga_size, &stamina1_tga},
+	{"gfx/hud/stamina2.tga", &stamina2_tga_size, &stamina2_tga},
+	{"gfx/hud/stamina3.tga", &stamina3_tga_size, &stamina3_tga},
+	{"gfx/hud/stamina4.tga", &stamina4_tga_size, &stamina4_tga},
+	{"gfx/hud/stamina5.tga", &stamina5_tga_size, &stamina5_tga},
+	{"gfx/hud/stamina6.tga", &stamina6_tga_size, &stamina6_tga},
+	{"gfx/hud/stamina7.tga", &stamina7_tga_size, &stamina7_tga},
+	{"gfx/hud/stamina8.tga", &stamina8_tga_size, &stamina8_tga},
+	{"gfx/hud/stamina9.tga", &stamina9_tga_size, &stamina9_tga},
 	{NULL, NULL, NULL}
 };
 
@@ -356,7 +412,7 @@ qboolean FS_PakIsPure( pack_t *pack ) {
 				return qtrue;		// on the aproved list
 			}
 		}
-		return qtrue;	// not on the pure server pak list
+		return qfalse;	// not on the pure server pak list
 	}
 	return qtrue;
 }
