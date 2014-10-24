@@ -328,9 +328,19 @@ typedef struct {
 	qhandle_t	charSetShader;
 	qhandle_t	whiteShader;
 	qhandle_t	consoleShader;
+
+	fontInfo_t  font;
+	qboolean    fontFont;
 } clientStatic_t;
 
 extern	clientStatic_t		cls;
+
+typedef enum {
+	ITEM_TEXTSTYLE_NORMAL,
+	ITEM_TEXTSTYLE_SHADOWED,
+	ITEM_TEXTSTYLE_SHADOWEDLESS
+} textStyle_t;
+
 
 //=============================================================================
 
@@ -569,6 +579,8 @@ void	SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, 
 void	SCR_DrawSmallChar( int x, int y, int ch );
 
 void	SCR_DrawStringExtNoShadow( int x, int y, float size, const char *string, float *setColor, qboolean forceColor );
+
+void CL_DrawFontText(float x, float y, float scale, vec4_t color, const char *text, int style);
 
 //
 // cl_cin.c
