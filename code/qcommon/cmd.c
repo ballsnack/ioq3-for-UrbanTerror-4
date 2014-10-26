@@ -41,6 +41,14 @@ byte		cmd_text_buf[MAX_CMD_BUFFER];
 
 //=============================================================================
 
+//loop
+
+struct {
+	char command[MAX_CMD_LINE];
+	qboolean running;
+} current_loop;
+
+
 /*
 ============
 Cmd_Wait_f
@@ -77,6 +85,8 @@ void Cbuf_Init (void)
 	cmd_text.data = cmd_text_buf;
 	cmd_text.maxsize = MAX_CMD_BUFFER;
 	cmd_text.cursize = 0;
+
+	current_loop.running = qfalse;
 }
 
 /*
@@ -223,6 +233,10 @@ void Cbuf_Execute (void)
 	}
 }
 
+void Cloop_Frame(void) {
+	if (current_loop.running)
+		Cbuf_InsertText(va("%s\n", current_loop.command));
+}
 
 /*
 ==============================================================================
@@ -374,6 +388,48 @@ void Cmd_Echo_f (void)
 		Com_Printf ("%s ",Cmd_Argv(i));
 	Com_Printf ("\n");
 }
+
+/*
+==============
+Cmd_Loop_f
+==============
+*/
+
+void
+Cmd_Loop_f(void)
+{
+    char *arg;
+
+    if (Cmd_Argc() != 2)
+    {
+        Com_Printf(
+                    "/loop <command>\n"
+                    "executes command as long as /endloop is not called (no nesting)\n");
+        return;
+    }
+
+    arg = Cmd_Argv(1);
+
+    if (!current_loop.running)
+    {
+        Q_strncpyz(current_loop.command, arg, sizeof(current_loop.command));
+        current_loop.running = qtrue;
+    }
+    else
+        Com_Printf("error : loops cannot be nested\n");
+}
+
+/*
+==============
+Cmd_Endloop_f
+==============
+*/
+void
+Cmd_Endloop_f(void)
+{
+    current_loop.running = qfalse;
+}
+
 
 
 /*
@@ -842,5 +898,7 @@ void Cmd_Init (void) {
 	Cmd_AddCommand ("-vstr",Cmd_PVstr_f);
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
+	Cmd_AddCommand ("loop", Cmd_Loop_f);
+	Cmd_AddCommand ("endloop", Cmd_Endloop_f);
 }
 

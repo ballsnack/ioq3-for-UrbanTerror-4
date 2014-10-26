@@ -60,6 +60,7 @@ qboolean ignoreNewline = qtrue;
 
 cvar_t		*con_conspeed;
 cvar_t		*con_notifytime;
+
 cvar_t 		*cl_chatcolor;
 cvar_t		*con_coloredKills;
 cvar_t 		*con_coloredHits;

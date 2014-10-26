@@ -436,7 +436,8 @@ SCR_DrawClock
 =================
 */
 void SCR_DrawClock(void) {
-	int 		color, fontsize, posx, posy, hour;
+	int 		color, fontsize, hour;
+	float		posx, posy;
 	char 		string[16];
 	qtime_t		myTime;
 
@@ -452,7 +453,7 @@ void SCR_DrawClock(void) {
 			hour = hourTo12(hour);
 
 		Com_sprintf(string, sizeof(string), "%02i:%02i", hour, myTime.tm_min);
-		SCR_DrawCondensedString(posx * 10, posy * 10, fontsize, string, g_color_table[color], qtrue);
+		SCR_DrawCondensedString(posx, posy, fontsize, string, g_color_table[color], qtrue);
 	}
 }
 
@@ -566,7 +567,7 @@ void SCR_DrawKills( void ) {
 		return;
 
 	char killStr[12];
-	int x = 56;
+	int x = 49;
 	int y = 437;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {

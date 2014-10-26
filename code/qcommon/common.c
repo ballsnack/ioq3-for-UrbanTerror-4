@@ -2822,7 +2822,9 @@ void Com_Frame( void ) {
 		}
 		msec = com_frameTime - lastTime;
 	} while ( msec < minMsec );
+	
 	Cbuf_Execute ();
+	Cloop_Frame();
 
 	if (com_altivec->modified)
 	{

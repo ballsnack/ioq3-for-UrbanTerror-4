@@ -87,6 +87,7 @@ cvar_t  *cl_randomrgb;
 cvar_t  *cl_deadText;
 cvar_t  *cl_chatArrow;
 cvar_t 	*cl_crosshairhealth;
+cvar_t 	*cl_cavalryblue;
 
 cvar_t  *clan;
 cvar_t  *cl_clanpos;
@@ -95,7 +96,6 @@ cvar_t 	*cl_autokevdrop;
 cvar_t	*cl_autokevdroponflag;
 
 cvar_t  *cl_lastServerAddress;
-cvar_t 	*cl_spoofGUID;
 
 void CL_Maplist_f(void);
 void CL_StealRGB_f(void);
@@ -1008,9 +1008,6 @@ static void CL_UpdateGUID( char *prefix, int prefix_len )
 {
 	fileHandle_t f;
 	int len;
-
-	if (cl_spoofGUID->integer)
-		return;
 
 	len = FS_SV_FOpenFileRead( QKEY_FILE, &f );
 	FS_FCloseFile( f );
@@ -2656,6 +2653,16 @@ void CL_Frame ( int msec ) {
 
 	Con_RunConsole();
 
+	if (cl_cavalryblue->integer == 1) {
+		if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_RED) {
+			Cbuf_AddText("cg_skinally 2\n");
+			Cbuf_AddText("cg_skinenemy 11\n");
+		} else if (cl.snap.ps.persistant[PERS_TEAM] == TEAM_BLUE) {
+			Cbuf_AddText("cg_skinally 11\n");
+			Cbuf_AddText("cg_skinenemy 2\n");
+		}
+	}
+
 	cls.framecount++;
 
 	if (cl_autokevdrop->integer > 0 && cl_autokevdrop->integer < 100) {
@@ -3050,7 +3057,7 @@ void CL_Init( void ) {
 	cl_teamchatIndicator = Cvar_Get( "cl_teamchatIndicator", "", CVAR_ARCHIVE );
 	cl_autokevdrop = Cvar_Get("cl_autokevdrop", "0", CVAR_ARCHIVE);
 	cl_autokevdroponflag = Cvar_Get("cl_autokevdroponflag", "0", CVAR_ARCHIVE);
-	cl_spoofGUID = Cvar_Get("cl_spoofGUID", "0", CVAR_ARCHIVE);
+	cl_cavalryblue = Cvar_Get("cl_cavalryblue", "1", CVAR_ARCHIVE);
 
 	// 0: legacy mouse acceleration
 	// 1: new implementation
@@ -3164,7 +3171,6 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("maplist", CL_Maplist_f);
 	Cmd_AddCommand ("stealrgb", CL_StealRGB_f);
 	Cmd_AddCommand ("dropitems", CL_DropItems_f);
-	Cmd_AddCommand ("updateguid", CL_UpdateGUID);
 	CL_InitRef();
 
 	SCR_Init ();
@@ -4180,11 +4186,10 @@ CL_DropItems
 */
 void CL_DropItems_f(void) {
 
-	if (clc.g_gametype == 7) {
+	if (clc.g_gametype == 7)
 		Cbuf_AddText("ut_itemdrop flag");
-	} else if (clc.g_gametype == 4 || clc.g_gametype == 8) {
+	else
 		Cbuf_AddText("ut_itemdrop medkit");
-	}
 
 }
 
