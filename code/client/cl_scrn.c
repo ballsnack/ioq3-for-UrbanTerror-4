@@ -40,6 +40,7 @@ cvar_t 		*cl_crosshairhealthcolor;
 cvar_t 		*cl_drawhealth;
 cvar_t		*cl_drawKills;
 cvar_t 		*cl_persistentcrosshair;
+cvar_t 		*cl_size;
 
 /*
 ================
@@ -542,21 +543,28 @@ SCR_DrawDemoRecording
 =================
 */
 void SCR_DrawDemoRecording( void ) {
-	char	string[1024];
-	int		pos;
+	char 	string[1024];
+	int 	pos;
 
-	if ( !clc.demorecording ) {
+	if (!clc.demorecording || clc.spDemoRecording)
 		return;
-	}
-	if ( clc.spDemoRecording ) {
-		return;
-	}
 
-	pos = FS_FTell( clc.demofile );
-	sprintf( string, ": %.10s... %iKB", clc.demoName, pos / 1024 );
+	pos = FS_FTell(clc.demofile);
 
-	SCR_DrawCondensedString( 320 - strlen(string) * 5.15 , 1, 8, "REC", g_color_table[1], qtrue );
- 	SCR_DrawCondensedString( 320 - strlen(string) * 5.15 + 30 , 1, 8, string, g_color_table[7], qtrue );
+	int 	nameLen = strlen(clc.demoName) + 1;
+	char 	*demoName = malloc(nameLen);
+	COM_StripExtension(clc.demoName, demoName, nameLen);
+
+	char 	*fmt;
+
+	if (strlen(demoName) > 40)
+		fmt = "^1REC^7: %.40s...: %iKB";
+	else
+		fmt = "^1REC^7: %s: %iKB";
+
+	sprintf(string, fmt, demoName, pos / 1024);
+
+	SCR_DrawFontText(320 - SCR_FontWidth(string, 0.18) / 2, 10, 0.18, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWEDLESS);
 }
 
 
@@ -565,25 +573,23 @@ void SCR_DrawDemoRecording( void ) {
 SCR_DrawClock
 =================
 */
-void SCR_DrawClock(void) {
-	int 		color, fontsize, hour;
-	float		posx, posy;
-	char 		string[16];
-	qtime_t		myTime;
+void SCR_DrawClock( void ) {
+	if (!Cvar_VariableIntegerValue("cg_draw2d") ||
+		cl_paused->integer ||
+		!cl_drawclock->integer)
+		return;
 
-	color = cl_drawclockcolor->integer;
-	fontsize = cl_drawclockfontsize->integer;
-	posx = cl_drawclockposx->integer;
-	posy = cl_drawclockposy->integer;
-
+	qtime_t myTime;
+	int hour;
+	char	string[16];
 	if (cl_drawclock->integer) {
-		Com_RealTime(&myTime);
+		Com_RealTime( &myTime );
 		hour = myTime.tm_hour;
-		if (cl_drawclock12->integer)
+		if (cl_drawclock->integer == 2)
 			hour = hourTo12(hour);
 
-		Com_sprintf(string, sizeof(string), "%02i:%02i", hour, myTime.tm_min);
-		SCR_DrawCondensedString(posx, posy, fontsize, string, g_color_table[color], qtrue);
+		Com_sprintf( string, sizeof (string), "%02i:%02i", hour, myTime.tm_min);
+		SCR_DrawFontText(320 - SCR_FontWidth(string, 0.24) / 2, 24, 0.24, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWED);
 	}
 }
 
@@ -605,11 +611,10 @@ void SCR_DrawHealth( void ) {
 
 	char healthStr[12];
 	int healthCol;
-	int x = 49;
-	int y = 449;
+	int y = 457;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 439;
+		y = 447;
 	}
 
 
@@ -625,8 +630,7 @@ void SCR_DrawHealth( void ) {
 
 	Com_sprintf(healthStr, 12, "H:^%i%i%%", healthCol, health);
 
-	SCR_DrawCondensedString(x, y, 8, healthStr, g_color_table[7], qfalse);
-
+	SCR_DrawFontText(50, y, cl_size->value, g_color_table[7], healthStr, ITEM_TEXTSTYLE_SHADOWED);
 
 }
 
@@ -698,16 +702,16 @@ void SCR_DrawKills( void ) {
 		return;
 
 	char killStr[12];
-	int x = 49;
-	int y = 437;
+	int x = 50;
+	int y = 445;
 
 	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 427;
+		y = 435;
 	}
 
 	if (cl_drawKills->integer == 1 || cl_drawKills->integer == 3) {
 		Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
-		SCR_DrawCondensedString(x, y, 8, killStr, g_color_table[7], qfalse );
+		SCR_DrawFontText(x, y, cl_size->value, g_color_table[7], killStr, ITEM_TEXTSTYLE_SHADOWED);
 	}
 
 
@@ -823,6 +827,7 @@ void SCR_Init( void ) {
     cl_drawhealth = Cvar_Get ("cl_drawHealth", "1", CVAR_ARCHIVE);
 	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
 	cl_persistentcrosshair = Cvar_Get("cl_persistentcrosshair", "0", CVAR_ARCHIVE);
+	cl_size = Cvar_Get("cl_size", "0.24", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }
