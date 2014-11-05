@@ -343,6 +343,10 @@ Asset Replacement
 #include "stamina9.h"
 #include "bigchars.h"
 
+#include "fontImage_0_30.h"
+#include "fontImage_1_30.h"
+#include "fontImage_30.h"
+
 struct newAsset {
 	char *path;
 	long int *size;
@@ -383,6 +387,9 @@ struct newAsset replacementAssets[] = {
 	{"gfx/hud/stamina7.tga", &stamina7_tga_size, &stamina7_tga},
 	{"gfx/hud/stamina8.tga", &stamina8_tga_size, &stamina8_tga},
 	{"gfx/hud/stamina9.tga", &stamina9_tga_size, &stamina9_tga},
+	{"fonts/fontImage_30.dat", &fontImage_30_dat_size, &fontImage_30_dat},
+	{"fonts/fontImage_0_30.tga", &fontImage_0_30_tga_size, &fontImage_0_30_tga},
+	{"fonts/fontImage_1_30.tga", &fontImage_1_30_tga_size, &fontImage_1_30_tga},
 	{NULL, NULL, NULL}
 };
 
