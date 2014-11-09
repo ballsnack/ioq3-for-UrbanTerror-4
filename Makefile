@@ -832,7 +832,7 @@ $(Q)$(DO_QVM_DEP)
 endef
 
 define DO_AS
-$(echo_cmd) "AS $<"
+$(echo_cmd) "[\036[AS\033[0m    ] $<"
 $(Q)$(CC) $(CFLAGS) -DELF -x assembler-with-cpp -o $@ -c $<
 endef
 
@@ -842,7 +842,7 @@ $(Q)$(CC) $(NOTSHLIBCFLAGS) -DDEDICATED $(CFLAGS) -o $@ -c $<
 endef
 
 define DO_WINDRES
-$(echo_cmd) "WINDRES $<"
+$(echo_cmd) "[\033[33mWINRES\033[0m] $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
 
@@ -1167,7 +1167,7 @@ else
 endif
 
 $(B)/Quake3-UrT.$(ARCH)$(BINEXT): $(Q3OBJ) $(Q3POBJ) $(LIBSDLMAIN)
-	$(echo_cmd) "LD $@"
+	$(echo_cmd) "[\033[31mLINK\033[0m  ] $@"
 	$(Q)$(CC) -o $@ $(Q3OBJ) $(Q3POBJ) $(CLIENT_LDFLAGS) \
 		$(LDFLAGS) $(LIBSDLMAIN)
 
@@ -1296,8 +1296,9 @@ ifeq ($(HAVE_VM_COMPILED),true)
   endif
 endif
 
+
 $(B)/Quake3-UrT-Ded.$(ARCH)$(BINEXT): $(Q3DOBJ)
-	$(echo_cmd) "LD $@"
+	$(echo_cmd) "[\033[31mLINK\033[0m  ] $@"
 	$(Q)$(CC) -o $@ $(Q3DOBJ) $(LDFLAGS)
 
 
