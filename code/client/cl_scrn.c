@@ -575,23 +575,24 @@ void SCR_DrawDemoRecording( void ) {
 SCR_DrawClock
 =================
 */
-void SCR_DrawClock( void ) {
-	if (!Cvar_VariableIntegerValue("cg_draw2d") ||
-		cl_paused->integer ||
-		!cl_drawclock->integer)
-		return;
+void SCR_DrawClock(void) {
+	int 		color, fontsize, posx, posy, hour;
+	char 		string[16];
+	qtime_t		myTime;
 
-	qtime_t myTime;
-	int hour;
-	char	string[16];
+	color = cl_drawclockcolor->integer;
+	fontsize = cl_drawclockfontsize->integer;
+	posx = cl_drawclockposx->integer;
+	posy = cl_drawclockposy->integer;
+
 	if (cl_drawclock->integer) {
-		Com_RealTime( &myTime );
+		Com_RealTime(&myTime);
 		hour = myTime.tm_hour;
-		if (cl_drawclock->integer == 2)
+		if (cl_drawclock12->integer)
 			hour = hourTo12(hour);
 
-		Com_sprintf( string, sizeof (string), "%02i:%02i", hour, myTime.tm_min);
-		SCR_DrawFontText(320 - SCR_FontWidth(string, 0.24) / 2, 24, 0.24, g_color_table[7], string, ITEM_TEXTSTYLE_SHADOWED);
+		Com_sprintf(string, sizeof(string), "%02i:%02i", hour, myTime.tm_min);
+		SCR_DrawCondensedString(posx * 10, posy * 10, fontsize, string, g_color_table[color], qtrue);
 	}
 }
 
