@@ -41,6 +41,8 @@ cvar_t 		*cl_drawhealth;
 cvar_t		*cl_drawKills;
 cvar_t 		*cl_persistentcrosshair;
 cvar_t 		*cl_size;
+cvar_t 		*cl_hky;
+cvar_t 		*cl_hky2;
 
 /*
 ================
@@ -611,12 +613,6 @@ void SCR_DrawHealth( void ) {
 
 	char healthStr[12];
 	int healthCol;
-	int y = 457;
-
-	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 447;
-	}
-
 
 	if (health >= 60) {
 		healthCol = 2;
@@ -630,7 +626,7 @@ void SCR_DrawHealth( void ) {
 
 	Com_sprintf(healthStr, 12, "H:^%i%i%%", healthCol, health);
 
-	SCR_DrawFontText(50, y, cl_size->value, g_color_table[7], healthStr, ITEM_TEXTSTYLE_SHADOWED);
+	SCR_DrawFontText(50, cl_hky2->integer, cl_size->value, g_color_table[7], healthStr, ITEM_TEXTSTYLE_SHADOWED);
 
 }
 
@@ -703,15 +699,10 @@ void SCR_DrawKills( void ) {
 
 	char killStr[12];
 	int x = 50;
-	int y = 445;
-
-	if (Cvar_VariableValue("cg_crosshairNamesType") == 0) {
-		y = 435;
-	}
 
 	if (cl_drawKills->integer == 1 || cl_drawKills->integer == 3) {
 		Com_sprintf(killStr, 12, "K:^2%i", cl.currentKills);
-		SCR_DrawFontText(x, y, cl_size->value, g_color_table[7], killStr, ITEM_TEXTSTYLE_SHADOWED);
+		SCR_DrawFontText(x, cl_hky->integer, cl_size->value, g_color_table[7], killStr, ITEM_TEXTSTYLE_SHADOWED);
 	}
 
 
@@ -720,7 +711,6 @@ void SCR_DrawKills( void ) {
 
 	int width;
 	int i;
-	y = 440;
 
 	if (cl_drawKills->integer > 1) {
 		if (cl.currentKills < 6) {
@@ -824,10 +814,12 @@ void SCR_Init( void ) {
     cl_drawclockposx = Cvar_Get ("cl_drawclockposx", "2", CVAR_ARCHIVE);
     cl_drawclockposy = Cvar_Get ("cl_drawclockposy", "42", CVAR_ARCHIVE);
 	cl_crosshairhealthcolor = Cvar_Get ("cl_crosshairhealthcolor", "0", CVAR_ARCHIVE);
-    cl_drawhealth = Cvar_Get ("cl_drawHealth", "1", CVAR_ARCHIVE);
-	cl_drawKills = Cvar_Get("cl_drawKills", "0", CVAR_ARCHIVE);
+    cl_drawhealth = Cvar_Get ("cl_drawhealth", "1", CVAR_ARCHIVE);
+	cl_drawKills = Cvar_Get("cl_drawkills", "0", CVAR_ARCHIVE);
 	cl_persistentcrosshair = Cvar_Get("cl_persistentcrosshair", "0", CVAR_ARCHIVE);
 	cl_size = Cvar_Get("cl_size", "0.24", CVAR_ARCHIVE);
+	cl_hky = Cvar_Get("cl_hky", "440", CVAR_ARCHIVE);
+	cl_hky2 = Cvar_Get("cl_hky2", "450", CVAR_ARCHIVE);
 
 	scr_initialized = qtrue;
 }

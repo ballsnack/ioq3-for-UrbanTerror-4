@@ -424,7 +424,7 @@ void Con_Init (void) {
 	con_timePrompt = Cvar_Get("con_timePrompt", "0", CVAR_ARCHIVE);
 	con_timePrompt12 = Cvar_Get("con_timePrompt12", "1", CVAR_ARCHIVE);
 	con_drawscrollbar = Cvar_Get("con_drawscrollbar", "0", CVAR_ARCHIVE);
-	con_height = Cvar_Get("con_heighs", "50", CVAR_ARCHIVE);
+	con_height = Cvar_Get("con_heighs", "55", CVAR_ARCHIVE);
 	con_fadeIn = Cvar_Get("con_fadeIn", "0", CVAR_ARCHIVE);
 	con_margin = Cvar_Get("con_margin", "0", CVAR_ARCHIVE);
 	con_tabs = Cvar_Get("con_tabs", "0", CVAR_ARCHIVE);
